@@ -6,13 +6,11 @@ For details refer: https://developers.amadeus.com/self-service/apis-docs/guides/
 */
 function getAccessToken() {
   //Creating the Request Body
-  {
     const url = "https://test.api.amadeus.com/v1/security/oauth2/token";
     const apikey = "15bojKjUylu27fBihpxlLclvsiiGzq0s";
     const apisecret = "aJ8oEcJx4aNP0Tzu";
-    formBody = `grant_type=client_credentials&client_id=${apikey}&client_secret=${apisecret}`;
-    console.log(formBody);
-  }
+    var formBody = `grant_type=client_credentials&client_id=${apikey}&client_secret=${apisecret}`;
+    // console.log(formBody);
 
   //Executing the fetch call in POST method
   return fetch(url, {

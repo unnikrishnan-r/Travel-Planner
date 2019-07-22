@@ -5,7 +5,8 @@ is provided
 */
 function getLowFareFlightOption(flightSearchObject) {
     //Forms the query string by iterating through the object
-    let queryString = formQueryString(flightSearchObject);
+    const url = "https://test.api.amadeus.com/v1/shopping/flight-offers";
+    let queryString = formQueryString(url, flightSearchObject);
     //Get Access Token for authorizing the API Call
     getAccessToken()
         .then(function (data) {
@@ -16,8 +17,7 @@ function getLowFareFlightOption(flightSearchObject) {
 }
 
 //Iterates through the input object and forms a query string
-function formQueryString(flightSearchObject) {
-    const url = "https://test.api.amadeus.com/v1/shopping/flight-offers";
+function formQueryString(url, flightSearchObject) {
     let queryString = "?"
     for (var property in flightSearchObject){
         queryString = `${queryString}&${property}=${flightSearchObject[property]}`

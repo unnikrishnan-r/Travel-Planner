@@ -11,23 +11,23 @@ function getLowFareFlightOption(flightSearchObject) {
     getAccessToken()
         .then(function (data) {
             const access_token = data.access_token;
-            searchForFlights(access_token, queryString);
+            makeamadeusApiCall(access_token, queryString);
         })
         .catch(error => console.error(error));
 }
 
 //Iterates through the input object and forms a query string
-function formQueryString(url, flightSearchObject) {
+function formQueryString(url, SearchObject) {
     let queryString = "?"
-    for (var property in flightSearchObject){
-        queryString = `${queryString}&${property}=${flightSearchObject[property]}`
+    for (var property in SearchObject){
+        queryString = `${queryString}&${property}=${SearchObject[property]}`
     }
     console.log(url+queryString);
     return (url+queryString);
 }
 
 //This function makes the actual API Call and returns the JSON response
-function searchForFlights(access_token, queryString) {
+function makeamadeusApiCall(access_token, queryString) {
     return fetch(queryString, {
             method: "GET",
             headers: {
@@ -56,3 +56,20 @@ getLowFareFlightOption({
     maxPrice: 50000,
     max: 3
 });
+
+//Function that takes a cityName and returns the iataCode
+function getAirportCodeUsingCityName (cityName){
+    var citySearchObject = {subType : "CITY", keyword : cityName , "page[limit]" : 1}
+    const url = "https://test.api.amadeus.com/v1/reference-data/locations";
+    let queryString = formQueryString (url, citySearchObject);
+
+    getAccessToken()
+    .then(function (data) {
+        const access_token = data.access_token;
+        makeamadeusApiCall(access_token, queryString);
+    })
+    .catch(error => console.error(error));
+
+}
+//Sample call for getIataCodeUsingCityName
+getAirportCodeUsingCityName("london");

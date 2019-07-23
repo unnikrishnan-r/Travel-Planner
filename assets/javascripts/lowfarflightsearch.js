@@ -10,8 +10,7 @@ function getLowFareFlightOption(flightSearchObject) {
     //Get Access Token for authorizing the API Call
     getAccessToken()
         .then(function (data) {
-            const access_token = data.access_token;
-            makeamadeusApiCall(access_token, queryString);
+            makeamadeusApiCall(data.access_token, queryString);
         })
         .catch(error => console.error(error));
 }
@@ -65,8 +64,7 @@ function getAirportCodeUsingCityName (cityName){
 
     getAccessToken()
     .then(function (data) {
-        const access_token = data.access_token;
-        makeamadeusApiCall(access_token, queryString);
+        makeamadeusApiCall(data.access_token, queryString);
     })
     .catch(error => console.error(error));
 

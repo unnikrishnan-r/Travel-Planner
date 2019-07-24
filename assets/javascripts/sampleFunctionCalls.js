@@ -17,3 +17,8 @@ getLowFareFlightOption({
   maxPrice: 50000,
   max: 3
 }).then(resp => console.log(resp));
+
+
+pointsOfinterest("New York City", "Food")
+pointsOfinterest("Chicago", "Food")
+pointsOfinterest("Amsterdam", "G")

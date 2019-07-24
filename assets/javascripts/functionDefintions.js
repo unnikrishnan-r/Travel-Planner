@@ -1,3 +1,31 @@
+/* In this application, we use APIs from https://developers.amadeus.com.
+The authentication mechanism is to pass APIKEY and APISECRET using POST method to receive an access token
+This access token should be used with other API calls for Authentication
+
+For details refer: https://developers.amadeus.com/self-service/apis-docs/guides/authorization
+*/
+function getAccessToken() {
+  //Creating the Request Body
+  const url = "https://test.api.amadeus.com/v1/security/oauth2/token";
+  const apikey = "15bojKjUylu27fBihpxlLclvsiiGzq0s";
+  const apisecret = "aJ8oEcJx4aNP0Tzu";
+  var formBody = `grant_type=client_credentials&client_id=${apikey}&client_secret=${apisecret}`;
+  // console.log(formBody);
+
+  //Executing the fetch call in POST method
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: formBody
+  })
+    .then(response => response.json())
+    .then(function(data) {
+      return data;
+    });
+}
+
 /*
 This function accepts input as a JS object with the various search parameters
 Expectation is that the code that calls the function ensures the minimum parameters (origin, destination, departureDate)
@@ -40,21 +68,6 @@ function makeamadeusApiCall(access_token, queryString) {
     .catch(error => console.error(error));
 }
 
-// Here is a sample call for the Search Flights operation
-getLowFareFlightOption({
-  origin: "YYZ",
-  destination: "COK",
-  departureDate: "2019-09-01",
-  returnDate: "2019-10-01",
-  adults: 2,
-  children: 2,
-  travelClass: "ECONOMY",
-  nonStop: "false",
-  currency: "CAD",
-  maxPrice: 50000,
-  max: 3
-}).then(resp => console.log(resp));
-
 //Function that takes a cityName and returns the iataCode
 function getAirportCodeUsingCityName(cityName) {
   var citySearchObject = {
@@ -71,7 +84,3 @@ function getAirportCodeUsingCityName(cityName) {
     })
     .catch(error => console.error(error));
 }
-//Sample call for getIataCodeUsingCityName
-getAirportCodeUsingCityName("london").then(res =>
-  console.log(res.data[0].iataCode)
-);

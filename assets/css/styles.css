@@ -5,6 +5,9 @@
 .card {
     margin-top : 50px;
 }
+#submitButton1 {
+    margin-left: 105px;
+}
 
 #image {
     height: 50px;

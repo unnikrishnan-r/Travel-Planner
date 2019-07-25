@@ -1,0 +1,16 @@
+.navbar-nav {
+    margin-left: 900px;
+}
+
+.card {
+    margin-top : 50px;
+}
+
+#image {
+    height: 50px;
+    width: 150px;
+}
+
+#cardHeader {
+    text-align: center;
+}

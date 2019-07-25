@@ -84,3 +84,54 @@ function getAirportCodeUsingCityName(cityName) {
     })
     .catch(error => console.error(error));
 }
+
+//Function to convert city with spaces into city with + i.e New York City --> New+York+City
+function handleSpace(city) {
+  //Using RE to replace space for +
+  city = city.trim().replace(/ /g, "+");
+  return city;
+}
+
+//Function takes two paramters City & (interestType is optional, defaults to attraction)
+//It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+
+function pointsOfinterest(city, interestType) {
+  //Handle second paramter if it is not passed
+  if (interestType === undefined) {
+    interestType = "attractions";
+  }
+
+  var goodCity = handleSpace(city);
+
+  var myurl =
+    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
+    goodCity +
+    "&limit=5&term=" +
+    interestType +
+    "";
+
+  //Make call to Yelp
+  $.ajax({
+    url: myurl,
+    //Header required as per Yelp API documentation
+    headers: {
+      Authorization:
+        "Bearer 4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx"
+    },
+    method: "GET",
+    dataType: "json"
+  }).then(function(response) {
+    for (let i in response.businesses) {
+      // console.log(response.businesses[i])
+      console.log("Name: " + response.businesses[i].name);
+      console.log(
+        "Address: " + response.businesses[i].location.display_address[1]
+      );
+      console.log("Img: " + response.businesses[i].imgage_url);
+      console.log("Rating: " + response.businesses[i].rating);
+      console.log("Price: " + response.businesses[i].price);
+      console.log("Review Count: " + response.businesses[i].review_count);
+      console.log("------------------------------------------------------");
+    }
+  });
+}

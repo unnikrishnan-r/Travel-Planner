@@ -1,4 +1,6 @@
 // On click function of submit button
+$(function(){
+
 
 function clickSubmit() {
     
@@ -28,6 +30,8 @@ restoretripPlanner()
 restorepointsOfInterest()
 
 clickSubmit()
+
+})
 
 
 

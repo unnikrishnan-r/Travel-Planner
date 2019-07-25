@@ -138,7 +138,9 @@ function pointsOfinterest(city, interestType) {
 
 // HTML dynamic loading
 
-function restoretripPlanner(){$(".content").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body"><form>
+function restoretripPlanner(){
+  $(".firstFormPg1").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+  <form>
 <div class="form-group">
     <label for="exampleInputEmail1" id="heading">Origin</label>
     <input type="input" class="form-control" id="origin"
@@ -163,6 +165,11 @@ function restoretripPlanner(){$(".content").append(`<div class="card"><div class
     <input type="date" class="form-control" id="return"
         placeholder="YYYY/MM/DD">
 </div>
+</form>
+</div></div>`)
+
+$(".content").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+<form>
 <div class="form-group">
     <label for="exampleInputPassword1">Number of Adults</label>
     <input type="input" class="form-control" id="adults"
@@ -183,6 +190,11 @@ function restoretripPlanner(){$(".content").append(`<div class="card"><div class
     <input type="input" class="form-control" id="class"
         placeholder="First Class?">
 </div>
+</form>
+</div></div>`)
+
+$(".thirdFormPg1").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+<form>
 <div class="form-group">
     <label for="exampleInputPassword1">Non-Stop?</label>
     <input type="input" class="form-control" id="nonStop"
@@ -203,8 +215,11 @@ function restoretripPlanner(){$(".content").append(`<div class="card"><div class
     <input type="input" class="form-control" id="results"
         placeholder="How Many Results do you want to see?">
 </div>
-<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
-</form></div></div>`)}
+</form>
+</div></div>`)
+
+$(".firstFormSubmitButton").append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
+ </form></div></div>`)}
 
 function restorepointsOfInterest(){
 

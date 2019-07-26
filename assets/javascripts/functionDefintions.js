@@ -85,56 +85,136 @@ function getAirportCodeUsingCityName(cityName) {
     .catch(error => console.error(error));
 }
 
-//Function to convert city with spaces into city with + i.e New York City --> New+York+City
-function handleSpace(city) {
+  //Function to convert city with spaces into city with + i.e New York City --> New+York+City
   //Using RE to replace space for +
-  city = city.trim().replace(/ /g, "+");
-  return city;
-}
 
-//Function takes two paramters City & (interestType is optional, defaults to attraction)
-//It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+  function handleSpace(city) {
 
-function pointsOfinterest(city, interestType) {
-  //Handle second paramter if it is not passed
-  if (interestType === undefined) {
-    interestType = "attractions";
+    city = city.trim().replace(/ /g, "+");
+
+    return city;
   }
 
-  var goodCity = handleSpace(city);
 
-  var myurl =
-    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
-    goodCity +
-    "&limit=5&term=" +
-    interestType +
-    "";
+  //Function takes two paramters City & (interestType is optional, defaults to attraction)
 
-  //Make call to Yelp
-  $.ajax({
-    url: myurl,
-    //Header required as per Yelp API documentation
-    headers: {
-      Authorization:
-        "Bearer 4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx"
-    },
-    method: "GET",
-    dataType: "json"
-  }).then(function(response) {
-    for (let i in response.businesses) {
-      // console.log(response.businesses[i])
-      console.log("Name: " + response.businesses[i].name);
-      console.log(
-        "Address: " + response.businesses[i].location.display_address[1]
-      );
-      console.log("Img: " + response.businesses[i].imgage_url);
-      console.log("Rating: " + response.businesses[i].rating);
-      console.log("Price: " + response.businesses[i].price);
-      console.log("Review Count: " + response.businesses[i].review_count);
-      console.log("------------------------------------------------------");
+  //It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+
+  function pointsOfinterest(city, interestType) {
+    //Handle second paramter if it is not passed
+
+    if (interestType === undefined) {
+      interestType = "attractions";
     }
-  });
-}
+
+    //Variables that will only be declared once
+
+    const goodCity = handleSpace(city);
+
+    const myurl =
+      "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
+      goodCity +
+      "&limit=2&term=" +
+      interestType +
+      "";
+
+    const apiKey =
+      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
+
+    //Make call to Yelp
+
+    $.ajax({
+      url: myurl,
+
+      //Header required as per Yelp API documentation
+
+      headers: {
+        Authorization: "Bearer " + apiKey
+      },
+
+      method: "GET",
+
+      dataType: "json"
+    }).then(function(response) {
+      for (let i in response.businesses) {
+        globalObjectslist.push({
+          Name: response.businesses[i].name,
+
+          Address: response.businesses[i].location.display_address[1],
+
+          Img: response.businesses[i].image_url,
+
+          Rating: response.businesses[i].rating,
+
+          Review_Count: response.businesses[i].review_count,
+
+          Link: response.businesses[i].url
+        });
+      }
+    });
+
+    //After populating response into an object (give 2 seconds for response), add poi to html
+    $("#loading").removeClass("d-none")
+    setTimeout(() => {
+      console.log(globalObjectslist)
+      $("#loading").addClass("d-none")
+      addPOI(globalObjectslist);
+    }, 2000);
+  }
+
+//   pointsOfinterest("Toronto");
+
+  //Function to take JSON call information and create cards to display on the webpage for each point of interest
+
+  function addPOI(listObjects) {
+    console.log(listObjects);
+
+    for (let i in listObjects) {
+      $("#poiRow").append(`<div class="col-lg-6">
+
+                                    <div class="card" style="width: 18rem;">
+
+                                        <h5 class="card-header text-center">${
+                                          listObjects[i].Name
+                                        }</h5>
+
+                                        <img src="${
+                                          listObjects[i].Img
+                                        }" class="card-img-top" alt="Image here for now">
+
+                                        <div class="card-body">
+
+                                            <p class="card-text text-center" style="font-style: italic; font-size: 75%;">Address: ${
+                                              listObjects[i].Address
+                                            }</p>
+
+                                        </div>
+
+                                        <ul class="list-group list-group-flush">
+
+                                            <li class="list-group-item">Rating: ${
+                                              listObjects[i].Rating
+                                            }</li>
+
+                                            <li class="list-group-item">Review Count: ${
+                                              listObjects[i].Review_Count
+                                            }</li>
+
+                                        </ul>
+
+                                        <div class="card-body text-center">
+
+                                            <a href="${
+                                              listObjects[i].Link
+                                            }" class="card-link">Click me for more Details!</a>
+
+                                        </div>
+
+                                    </div>
+
+                                 </div>`);
+    }
+  }
 
 // HTML dynamic loading
 

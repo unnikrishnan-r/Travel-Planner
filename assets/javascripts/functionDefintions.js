@@ -234,9 +234,9 @@ function restoretripPlanner(){$(".container").append(`<div class="card">
         <div class="col-md-2">
             <label>Class</label>
             <select class="form" id="class">
-                <option>First Class</option>
-                <option>Business</option>
-                <option>Economy</option>
+                <option>ECONOMY</option>
+                <option>BUSINESS</option>
+                <option>FIRST</option>
             </select>
         </div>
         <div class="col-md-2">
@@ -473,20 +473,23 @@ function clickSubmit() {
       
       let results = {
         origin: $("#origin").val().trim(),
-        destination1: $("#destination").val().trim(),
+        destination: $("#destination").val().trim(),
         departureDate: $("#departure").val(),
-        returnDate: $("#return").val(),
-        adults: $("#adults :selected").val(),
-        children: $("#children :selected").val(),
+        returnDate: $("#arrival").val(),
+        adults: $("#Adults :selected").val(),
+        children: $("#Children :selected").val(),
         travelClass: $("#class :selected").val(),
-        nonStop: "False",
+        nonStop: "false",
         //Defaulting currency and max in the API call
-        //currency: $("#currency").val().trim(),
+        currency:"CAD",
         maxPrice: $("#Price").val(),
         //max: $("#results").val().trim()
       }
       if (value === "Continous") {
-         results.nonStop = "True"                
+         results.nonStop = "true"                
        }
+       console.log(results)
+     // console.log(getLowFareFlightOption(results))
+      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })
   }

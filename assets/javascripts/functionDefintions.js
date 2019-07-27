@@ -157,7 +157,7 @@ function pointsOfinterest(city, interestType) {
   //After populating response into an object (give 2 seconds for response), add poi to html
   $("#loading").removeClass("d-none");
   setTimeout(() => {
-    console.log(globalObjectslist);
+    //console.log(globalObjectslist);
     $("#loading").addClass("d-none");
     addPOI(globalObjectslist);
   }, 2000);
@@ -219,93 +219,93 @@ function addPOI(listObjects) {
 
 // HTML dynamic loading
 
-function restoretripPlanner() {
-  $(".firstFormPg1")
-    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
-  <form>
-<div class="form-group">
-    <label for="exampleInputEmail1" id="heading">Origin</label>
-    <input type="input" class="form-control" id="origin"
-        aria-describedby="emailHelp" placeholder="Enter your origin please">
-    <small id="emailHelp" class="form-text text-muted">Please make sure spelling is
-        correct.</small>
+function restoretripPlanner(){$(".container").append(`<div class="card">
+<div class="card-header">
+    <h5 id="header">Flight Search</h5>
 </div>
-<div class="form-group">
-    <label for="exampleInputEmail1">Destination</label>
-    <input type="input" class="form-control" id="destination"
-        aria-describedby="emailHelp" placeholder="Enter your destination please">
-    <small id="emailHelp" class="form-text text-muted">Please make sure spelling is
-        correct.</small>
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Departure Date</label>
-    <input type="date" class="form-control" id="departure"
-        placeholder="YYYY/MM/DD">
-</div>
-<div class="form-group" id="mango">
-    <label for="exampleInputPassword1">Return Date</label>
-    <input type="date" class="form-control" id="return"
-        placeholder="YYYY/MM/DD">
-</div>
-</form>
-</div></div>`);
+<div class="information">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Type of Flight</label>
+            <select class="form" id="Nonstop">
+            <option>Continous</option>
+            <option>Connecting</option>
+            </select>
+        </div>
+        
+    
+        <div class="col-md-2">
+            <label>Class</label>
+            <select class="form" id="class">
+                <option>ECONOMY</option>
+                <option>BUSINESS</option>
+                <option>FIRST</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Adults</label>
+            <select class="form" id="Adults">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Children</label>
+            <select class="form" id="Children">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <div class ="col-8">
+            <input type="number" class="form-control" id="Price" placeholder ="Max Price">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-3">
+            <label for="exampleInputPassword1">Departure Date</label>
+            <input type="date" class="form-control" id="departure" placeholder="YYYY/MM/DD">
 
-  $(".content")
-    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
-<form>
-<div class="form-group">
-    <label for="exampleInputPassword1">Number of Adults</label>
-    <input type="input" class="form-control" id="adults"
-        placeholder="Number of passengers (Optional)">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Number of Children</label>
-    <input type="input" class="form-control" id="children"
-        placeholder="Number of passengers (Optional)">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Max Price</label>
-    <input type="input" class="form-control" id="max"
-        placeholder="Enter a number (Optional)">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Travel Class</label>
-    <input type="input" class="form-control" id="class"
-        placeholder="First Class?">
-</div>
-</form>
-</div></div>`);
+        </div>
+        <div class="col-md-3">
+            <label for="exampleInputPassword1">Arrival Date</label>
+            <input type="date" class="form-control" id="arrival" placeholder="YYYY/MM/DD">
+        </div>
+        <div class="col-md-2">
+            <label for="exampleInputEmail1" id="heading">Origin</label>
+            <input type="input" class="form-control" id="origin" placeholder="Origin">
+        </div>
+        <div class="col-md-2">
+            <label for="exampleInputEmail1" id="heading">Destination</label>
+            <input type="input" class="form-control" id="destination" placeholder="Destination">
 
-  $(".thirdFormPg1")
-    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
-<form>
-<div class="form-group">
-    <label for="exampleInputPassword1">Non-Stop?</label>
-    <input type="input" class="form-control" id="nonStop"
-        placeholder="Non Stop?">
+        </div>
+        <div class="col-md-1">
+                <button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
+        </div>
+    </div>
 </div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Currency</label>
-    <input type="input" class="form-control" id="currency"
-        placeholder="Currency">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Max Price</label>
-    <input type="input" class="form-control" id="maxPrice"
-        placeholder="Max Price">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Results</label>
-    <input type="input" class="form-control" id="results"
-        placeholder="How Many Results do you want to see?">
-</div>
-</form>
-</div></div>`);
+</div>`)}
 
-  $(".firstFormSubmitButton")
-    .append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
- </form></div></div>`);
-}
+
 
 function restorepointsOfInterest() {
   $(".contents").append(`<div class="card">
@@ -326,3 +326,178 @@ function restorepointsOfInterest() {
     </div>
 </div>`);
 }
+
+/*Function to display  flight Search on HTML. The arguments expected by the function are:
+1. Original Flight Search Request Object
+2. Response from the API
+*/
+function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
+  //A Container is added to the HTML body which will hold all the flight results
+  $("body").append(
+    $("<div>", {
+      class: "container flightSearchResults"
+    })
+  );
+
+  /*The response is structured as data, dictionaries and meta
+  data holds all the flight details ; dictionaries is to convert codes to user friendly text
+  data --> offerItem --> services --> segments
+
+  So looping through each offers to begin with
+  */
+  flightSearchResult.data.forEach(function(flightOffer, index) {
+    //Each offer can have "services" "price", (2 more which we are not using currently)
+    flightOffer.offerItems.forEach(function(offerItems) {
+      //Create a card per offer
+      $(".flightSearchResults").append(
+        $("<div>", {
+          class: "card card-header offer-group ",
+          offerNumber: `${index}`,
+          text:
+            "Offer Number: " +
+            `${index + 1}` +
+            " ; Round Trip @ CAD " +
+            offerItems.price.total
+        }).append(
+          $("<ul>", {
+            class: "list-group list-group-flush"
+          })
+        )
+      );
+
+      //"Services" can have 2 "segments" , one for onward and one for return trip
+      offerItems.services.forEach(function(services, index2) {
+        if (index2 === 0) {
+          var offerItemText = "Flights to:" + flightSearchRequest.destination;
+          var flightDirection = "onward";
+        } else {
+          var offerItemText = "Flights to:" + flightSearchRequest.origin;
+          var flightDirection = "return";
+        }
+        // Adding a item in the card group for each leg of the trip
+        $('[offerNumber="' + index + '"]')
+          .children()
+          .append(
+            $("<li>", {
+              class: "list-group-item",
+              flightdirection: flightDirection,
+              text: offerItemText
+            })
+          );
+        // Now we are looping through to identify each segment's atttribute
+        services.segments.forEach(function(segment) {
+          var displayRoute =
+            segment.flightSegment.departure.iataCode +
+            " - " +
+            segment.flightSegment.arrival.iataCode;
+
+          var displayTimings =
+            moment.parseZone(segment.flightSegment.departure.at).format("HH:mm") +
+            " - " +
+            moment.parseZone(segment.flightSegment.arrival.at).format("HH:mm");
+            console.log(segment.flightSegment.departure.at , segment.flightSegment.arrival.at)
+
+          var displayDuration = moment(segment.flightSegment.arrival.at).diff(moment(segment.flightSegment.departure.at))
+          displayDuration = moment.duration(displayDuration).hours() + "h " + moment.duration(displayDuration).minutes() + "m"
+          console.log(displayDuration)
+          var displaySeatsLeft =
+            segment.pricingDetailPerAdult.availability + " seats left";
+
+          const airlineLogoUrl = "http://pics.avs.io/100/100/";
+          var displayAirlineLogo =
+            airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
+
+          // Adding details of each flight using a Bootstrap grid inside the card body
+          $('[offerNumber="' + index + '"]')
+            .find('[flightdirection="' + flightDirection + '"]')
+            .append(
+              $("<div>", {
+                class: "flightSegment justify-content-md-center row"
+              })
+                //Show the carrier code : EK for Emirates
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2"
+                  }).append(
+                    $("<img>", {
+                      src: displayAirlineLogo,
+                      class: "img-fluid rounded text-center"
+                    })
+                  )
+                )
+                //Show the route of the flight
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displayRoute
+                  })
+                )
+                //Show the timings, departure and arrival
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displayTimings
+                  })
+                )
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displayDuration
+                  })
+                )
+
+                //Display the number of seats left
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displaySeatsLeft
+                  })
+                )
+                //Display the class of travel
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: segment.pricingDetailPerAdult.travelClass
+                  })
+                )
+            );
+        });
+      });
+    });
+  });
+}
+
+// On Click of submit
+
+function clickSubmit() {
+    
+  $("body").on("click","#submitButton1",function(event){
+      
+      event.preventDefault();
+
+      var value = $("#Nonstop :selected").val()
+      
+      
+      let results = {
+        origin: $("#origin").val().trim(),
+        destination: $("#destination").val().trim(),
+        departureDate: $("#departure").val(),
+        returnDate: $("#arrival").val(),
+        adults: $("#Adults :selected").val(),
+        children: $("#Children :selected").val(),
+        travelClass: $("#class :selected").val(),
+        nonStop: "false",
+        //Defaulting currency and max in the API call
+        currency:"CAD",
+        maxPrice: $("#Price").val(),
+        //max: $("#results").val().trim()
+      }
+      if (value === "Continous") {
+         results.nonStop = "true"                
+       }
+       console.log(results)
+     // console.log(getLowFareFlightOption(results))
+      $(".flightSearchResults").empty();
+      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
+  })
+  }

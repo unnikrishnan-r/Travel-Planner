@@ -389,10 +389,14 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
             segment.flightSegment.arrival.iataCode;
 
           var displayTimings =
-            moment(segment.flightSegment.departure.at).format("HH:MM") +
+            moment.parseZone(segment.flightSegment.departure.at).format("HH:mm") +
             " - " +
-            moment(segment.flightSegment.arrival.at).format("HH:MM");
+            moment.parseZone(segment.flightSegment.arrival.at).format("HH:mm");
+            console.log(segment.flightSegment.departure.at , segment.flightSegment.arrival.at)
 
+          var displayDuration = moment(segment.flightSegment.arrival.at).diff(moment(segment.flightSegment.departure.at))
+          displayDuration = moment.duration(displayDuration).hours() + "h " + moment.duration(displayDuration).minutes() + "m"
+          console.log(displayDuration)
           var displaySeatsLeft =
             segment.pricingDetailPerAdult.availability + " seats left";
 
@@ -435,7 +439,7 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
                 .append(
                   $("<div>", {
                     class: "col col-sm-2",
-                    text: "Duration"
+                    text: displayDuration
                   })
                 )
 

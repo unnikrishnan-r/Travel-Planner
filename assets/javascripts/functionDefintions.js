@@ -396,6 +396,10 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
           var displaySeatsLeft =
             segment.pricingDetailPerAdult.availability + " seats left";
 
+          const airlineLogoUrl = "http://pics.avs.io/100/100/";
+          var displayAirlineLogo =
+            airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
+
           // Adding details of each flight using a Bootstrap grid inside the card body
           $('[offerNumber="' + index + '"]')
             .find('[flightdirection="' + flightDirection + '"]')
@@ -406,9 +410,13 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
                 //Show the carrier code : EK for Emirates
                 .append(
                   $("<div>", {
-                    class: "col col-sm-1",
-                    text: segment.flightSegment.carrierCode
-                  })
+                    class: "col col-sm-2"
+                  }).append(
+                    $("<img>", {
+                      src: displayAirlineLogo,
+                      class: "img-fluid rounded text-center"
+                    })
+                  )
                 )
                 //Show the route of the flight
                 .append(
@@ -424,17 +432,17 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
                     text: displayTimings
                   })
                 )
-                // .append(
-                //   $("<div>", {
-                //     class: "col col-sm-2",
-                //     text: displayDuration
-                //   })
-                // )
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: "Duration"
+                  })
+                )
 
                 //Display the number of seats left
                 .append(
                   $("<div>", {
-                    class: "col col-sm-3",
+                    class: "col col-sm-2",
                     text: displaySeatsLeft
                   })
                 )

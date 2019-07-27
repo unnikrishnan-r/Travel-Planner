@@ -104,7 +104,9 @@ function pointsOfinterest(city, interestType) {
   if (interestType === undefined) {
     interestType = "attractions";
   }
-
+  //After populating response into an object (give 2 seconds for response), add poi to html
+  $("#loading").removeClass("d-none");
+  
   //Variables that will only be declared once
 
   const goodCity = handleSpace(city);
@@ -112,7 +114,7 @@ function pointsOfinterest(city, interestType) {
   const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
     goodCity +
-    "&limit=2&term=" +
+    "&limit=5&term=" +
     interestType +
     "";
 
@@ -152,15 +154,12 @@ function pointsOfinterest(city, interestType) {
         Telephone: response.businesses[i].display_phone
       });
     }
+    setTimeout(() => {
+      //console.log(globalObjectslist);
+      $("#loading").addClass("d-none");
+      addPOI(globalObjectslist);
+    }, 500);
   });
-
-  //After populating response into an object (give 2 seconds for response), add poi to html
-  $("#loading").removeClass("d-none");
-  setTimeout(() => {
-    //console.log(globalObjectslist);
-    $("#loading").addClass("d-none");
-    addPOI(globalObjectslist);
-  }, 2000);
 }
 
 //   pointsOfinterest("Toronto");

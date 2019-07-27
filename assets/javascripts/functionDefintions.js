@@ -154,7 +154,7 @@ function pointsOfinterest(city, interestType) {
   //After populating response into an object (give 2 seconds for response), add poi to html
   $("#loading").removeClass("d-none");
   setTimeout(() => {
-    console.log(globalObjectslist);
+    //console.log(globalObjectslist);
     $("#loading").addClass("d-none");
     addPOI(globalObjectslist);
   }, 2000);
@@ -216,93 +216,93 @@ function addPOI(listObjects) {
 
 // HTML dynamic loading
 
-function restoretripPlanner() {
-  $(".firstFormPg1")
-    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
-  <form>
-<div class="form-group">
-    <label for="exampleInputEmail1" id="heading">Origin</label>
-    <input type="input" class="form-control" id="origin"
-        aria-describedby="emailHelp" placeholder="Enter your origin please">
-    <small id="emailHelp" class="form-text text-muted">Please make sure spelling is
-        correct.</small>
+function restoretripPlanner(){$(".container").append(`<div class="card">
+<div class="card-header">
+    <h5 id="header">Flight Search</h5>
 </div>
-<div class="form-group">
-    <label for="exampleInputEmail1">Destination</label>
-    <input type="input" class="form-control" id="destination"
-        aria-describedby="emailHelp" placeholder="Enter your destination please">
-    <small id="emailHelp" class="form-text text-muted">Please make sure spelling is
-        correct.</small>
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Departure Date</label>
-    <input type="date" class="form-control" id="departure"
-        placeholder="YYYY/MM/DD">
-</div>
-<div class="form-group" id="mango">
-    <label for="exampleInputPassword1">Return Date</label>
-    <input type="date" class="form-control" id="return"
-        placeholder="YYYY/MM/DD">
-</div>
-</form>
-</div></div>`);
+<div class="information">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Type of Flight</label>
+            <select class="form" id="Nonstop">
+            <option>Continous</option>
+            <option>Connecting</option>
+            </select>
+        </div>
+        
+    
+        <div class="col-md-2">
+            <label>Class</label>
+            <select class="form" id="class">
+                <option>First Class</option>
+                <option>Business</option>
+                <option>Economy</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Adults</label>
+            <select class="form" id="Adults">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Children</label>
+            <select class="form" id="Children">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <div class ="col-8">
+            <input type="number" class="form-control" id="Price" placeholder ="Max Price">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-3">
+            <label for="exampleInputPassword1">Departure Date</label>
+            <input type="date" class="form-control" id="departure" placeholder="YYYY/MM/DD">
 
-  $(".content")
-    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
-<form>
-<div class="form-group">
-    <label for="exampleInputPassword1">Number of Adults</label>
-    <input type="input" class="form-control" id="adults"
-        placeholder="Number of passengers (Optional)">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Number of Children</label>
-    <input type="input" class="form-control" id="children"
-        placeholder="Number of passengers (Optional)">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Max Price</label>
-    <input type="input" class="form-control" id="max"
-        placeholder="Enter a number (Optional)">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Travel Class</label>
-    <input type="input" class="form-control" id="class"
-        placeholder="First Class?">
-</div>
-</form>
-</div></div>`);
+        </div>
+        <div class="col-md-3">
+            <label for="exampleInputPassword1">Arrival Date</label>
+            <input type="date" class="form-control" id="arrival" placeholder="YYYY/MM/DD">
+        </div>
+        <div class="col-md-2">
+            <label for="exampleInputEmail1" id="heading">Origin</label>
+            <input type="input" class="form-control" id="origin" placeholder="Origin">
+        </div>
+        <div class="col-md-2">
+            <label for="exampleInputEmail1" id="heading">Destination</label>
+            <input type="input" class="form-control" id="destination" placeholder="Destination">
 
-  $(".thirdFormPg1")
-    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
-<form>
-<div class="form-group">
-    <label for="exampleInputPassword1">Non-Stop?</label>
-    <input type="input" class="form-control" id="nonStop"
-        placeholder="Non Stop?">
+        </div>
+        <div class="col-md-1">
+                <button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
+        </div>
+    </div>
 </div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Currency</label>
-    <input type="input" class="form-control" id="currency"
-        placeholder="Currency">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Max Price</label>
-    <input type="input" class="form-control" id="maxPrice"
-        placeholder="Max Price">
-</div>
-<div class="form-group">
-    <label for="exampleInputPassword1">Results</label>
-    <input type="input" class="form-control" id="results"
-        placeholder="How Many Results do you want to see?">
-</div>
-</form>
-</div></div>`);
+</div>`)}
 
-  $(".firstFormSubmitButton")
-    .append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
- </form></div></div>`);
-}
+
 
 function restorepointsOfInterest() {
   $(".contents").append(`<div class="card">
@@ -459,3 +459,34 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
     });
   });
 }
+
+// On Click of submit
+
+function clickSubmit() {
+    
+  $("body").on("click","#submitButton1",function(event){
+      
+      event.preventDefault();
+
+      var value = $("#Nonstop :selected").val()
+      
+      
+      let results = {
+        origin: $("#origin").val().trim(),
+        destination1: $("#destination").val().trim(),
+        departureDate: $("#departure").val(),
+        returnDate: $("#return").val(),
+        adults: $("#adults :selected").val(),
+        children: $("#children :selected").val(),
+        travelClass: $("#class :selected").val(),
+        nonStop: "False",
+        //Defaulting currency and max in the API call
+        //currency: $("#currency").val().trim(),
+        maxPrice: $("#Price").val(),
+        //max: $("#results").val().trim()
+      }
+      if (value === "Continous") {
+         results.nonStop = "True"                
+       }
+  })
+  }

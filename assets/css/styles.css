@@ -3,10 +3,13 @@
 }
 
 .card {
-    margin-top : 50px;
+    margin-top : 10px;
+    padding-bottom: 10px;
 }
-#submitButton1 {
-    margin-left: 105px;
+.information {
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 #image {
@@ -14,6 +17,10 @@
     width: 150px;
 }
 
-#cardHeader {
+#header {
     text-align: center;
+}
+
+#submitButton1{
+    margin-top: 30px;
 }

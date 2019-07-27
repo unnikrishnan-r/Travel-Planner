@@ -135,6 +135,7 @@ function pointsOfinterest(city, interestType) {
     dataType: "json"
   }).then(function(response) {
     for (let i in response.businesses) {
+      console.log(response.businesses[i])
       globalObjectslist.push({
         Name: response.businesses[i].name,
 
@@ -146,7 +147,9 @@ function pointsOfinterest(city, interestType) {
 
         Review_Count: response.businesses[i].review_count,
 
-        Link: response.businesses[i].url
+        Link: response.businesses[i].url,
+
+        Telephone: response.businesses[i].display_phone
       });
     }
   });
@@ -165,52 +168,52 @@ function pointsOfinterest(city, interestType) {
 //Function to take JSON call information and create cards to display on the webpage for each point of interest
 
 function addPOI(listObjects) {
-  console.log(listObjects);
-
   for (let i in listObjects) {
-    $("#poiRow").append(`<div class="col-lg-6">
-
-                                    <div class="card" style="width: 18rem;">
-
-                                        <h5 class="card-header text-center">${
+    $("#poiCon").append(`<div class="card poiCard" style="width: 100%;">                                      
+                                        <h5 class="card-header text-center">
+                                        <span>${
                                           listObjects[i].Name
-                                        }</h5>
+                                        }</span>
+                                        <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
+                                        ${listObjects[i].Address}</span>
+                                        </h5>                                        
+                                        <div class="row poiRow align-items-center">                                     
 
-                                        <img src="${
-                                          listObjects[i].Img
-                                        }" class="card-img-top" alt="Image here for now">
+                                          <div class="col-md-4">
 
-                                        <div class="card-body">
+                                            <img src="${
+                                              listObjects[i].Img
+                                            }" class="card-img-top poiImages rounded" alt="Image here for now">
 
-                                            <p class="card-text text-center" style="font-style: italic; font-size: 75%;">Address: ${
-                                              listObjects[i].Address
-                                            }</p>
+                                          </div>
+                                          <div class="col-md-5">
+                                          Hold for reviews
+                                          </div>
+                                          <div class="col-md-3">
 
-                                        </div>
+                                            <ul class="list-group list-group-flush poiInfo">
 
-                                        <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">Rating: ${
+                                                  listObjects[i].Rating
+                                                }</li>
 
-                                            <li class="list-group-item">Rating: ${
-                                              listObjects[i].Rating
-                                            }</li>
+                                                <li class="list-group-item">Review Count: ${
+                                                  listObjects[i].Review_Count
+                                                }</li>
+                                                
+                                                </li>
+                                                <li class="list-group-item"> Phone Number: ${listObjects[i].Telephone}
+                                                </li>
+                                                <li class="list-group-item"><a href="${
+                                                  listObjects[i].Link
+                                                }" class="card-link">Click me for more Details!</a>                                            </li>
 
-                                            <li class="list-group-item">Review Count: ${
-                                              listObjects[i].Review_Count
-                                            }</li>
+                                            </ul>
+                                          </div>
 
-                                        </ul>
+                                      </div>
 
-                                        <div class="card-body text-center">
-
-                                            <a href="${
-                                              listObjects[i].Link
-                                            }" class="card-link">Click me for more Details!</a>
-
-                                        </div>
-
-                                    </div>
-
-                                 </div>`);
+                            </div>`);
   }
 }
 

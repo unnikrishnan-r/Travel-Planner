@@ -56,7 +56,7 @@ globalObjectslist = [];
 
 $("body").on("click", "#poiSubmit", function() {
   event.preventDefault();
-  $("#poiRow").empty();
+  $(".poiRow").empty();
   globalObjectslist.splice(0, globalObjectslist.length);
   let city = $("#poiDestination")
     .val()

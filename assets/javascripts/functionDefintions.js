@@ -85,141 +85,143 @@ function getAirportCodeUsingCityName(cityName) {
     .catch(error => console.error(error));
 }
 
-  //Function to convert city with spaces into city with + i.e New York City --> New+York+City
-  //Using RE to replace space for +
+//Function to convert city with spaces into city with + i.e New York City --> New+York+City
+//Using RE to replace space for +
 
-  function handleSpace(city) {
+function handleSpace(city) {
+  city = city.trim().replace(/ /g, "+");
 
-    city = city.trim().replace(/ /g, "+");
+  return city;
+}
 
-    return city;
+//Function takes two paramters City & (interestType is optional, defaults to attraction)
+
+//It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+
+function pointsOfinterest(city, interestType) {
+  //Handle second paramter if it is not passed
+
+  if (interestType === undefined) {
+    interestType = "attractions";
   }
 
+  //Variables that will only be declared once
 
-  //Function takes two paramters City & (interestType is optional, defaults to attraction)
+  const goodCity = handleSpace(city);
 
-  //It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+  const myurl =
+    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
+    goodCity +
+    "&limit=2&term=" +
+    interestType +
+    "";
 
-  function pointsOfinterest(city, interestType) {
-    //Handle second paramter if it is not passed
+  const apiKey =
+    "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
 
-    if (interestType === undefined) {
-      interestType = "attractions";
+  //Make call to Yelp
+
+  $.ajax({
+    url: myurl,
+
+    //Header required as per Yelp API documentation
+
+    headers: {
+      Authorization: "Bearer " + apiKey
+    },
+
+    method: "GET",
+
+    dataType: "json"
+  }).then(function(response) {
+    for (let i in response.businesses) {
+      console.log(response.businesses[i])
+      globalObjectslist.push({
+        Name: response.businesses[i].name,
+
+        Address: response.businesses[i].location.display_address[1],
+
+        Img: response.businesses[i].image_url,
+
+        Rating: response.businesses[i].rating,
+
+        Review_Count: response.businesses[i].review_count,
+
+        Link: response.businesses[i].url,
+
+        Telephone: response.businesses[i].display_phone
+      });
     }
+  });
 
-    //Variables that will only be declared once
-
-    const goodCity = handleSpace(city);
-
-    const myurl =
-      "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
-      goodCity +
-      "&limit=2&term=" +
-      interestType +
-      "";
-
-    const apiKey =
-      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
-
-    //Make call to Yelp
-
-    $.ajax({
-      url: myurl,
-
-      //Header required as per Yelp API documentation
-
-      headers: {
-        Authorization: "Bearer " + apiKey
-      },
-
-      method: "GET",
-
-      dataType: "json"
-    }).then(function(response) {
-      for (let i in response.businesses) {
-        globalObjectslist.push({
-          Name: response.businesses[i].name,
-
-          Address: response.businesses[i].location.display_address[1],
-
-          Img: response.businesses[i].image_url,
-
-          Rating: response.businesses[i].rating,
-
-          Review_Count: response.businesses[i].review_count,
-
-          Link: response.businesses[i].url
-        });
-      }
-    });
-
-    //After populating response into an object (give 2 seconds for response), add poi to html
-    $("#loading").removeClass("d-none")
-    setTimeout(() => {
-      console.log(globalObjectslist)
-      $("#loading").addClass("d-none")
-      addPOI(globalObjectslist);
-    }, 2000);
-  }
+  //After populating response into an object (give 2 seconds for response), add poi to html
+  $("#loading").removeClass("d-none");
+  setTimeout(() => {
+    console.log(globalObjectslist);
+    $("#loading").addClass("d-none");
+    addPOI(globalObjectslist);
+  }, 2000);
+}
 
 //   pointsOfinterest("Toronto");
 
-  //Function to take JSON call information and create cards to display on the webpage for each point of interest
+//Function to take JSON call information and create cards to display on the webpage for each point of interest
 
-  function addPOI(listObjects) {
-    console.log(listObjects);
-
-    for (let i in listObjects) {
-      $("#poiRow").append(`<div class="col-lg-6">
-
-                                    <div class="card" style="width: 18rem;">
-
-                                        <h5 class="card-header text-center">${
+function addPOI(listObjects) {
+  for (let i in listObjects) {
+    $("#poiCon").append(`<div class="card poiCard" style="width: 100%;">                                      
+                                        <h5 class="card-header text-center">
+                                        <span>${
                                           listObjects[i].Name
-                                        }</h5>
+                                        }</span>
+                                        <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
+                                        ${listObjects[i].Address}</span>
+                                        </h5>                                        
+                                        <div class="row poiRow align-items-center">                                     
 
-                                        <img src="${
-                                          listObjects[i].Img
-                                        }" class="card-img-top" alt="Image here for now">
+                                          <div class="col-md-4">
 
-                                        <div class="card-body">
+                                            <img src="${
+                                              listObjects[i].Img
+                                            }" class="card-img-top poiImages rounded" alt="Image here for now">
 
-                                            <p class="card-text text-center" style="font-style: italic; font-size: 75%;">Address: ${
-                                              listObjects[i].Address
-                                            }</p>
+                                          </div>
+                                          <div class="col-md-5">
+                                          Hold for reviews
+                                          </div>
+                                          <div class="col-md-3">
 
-                                        </div>
+                                            <ul class="list-group list-group-flush poiInfo">
 
-                                        <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">Rating: ${
+                                                  listObjects[i].Rating
+                                                }</li>
 
-                                            <li class="list-group-item">Rating: ${
-                                              listObjects[i].Rating
-                                            }</li>
+                                                <li class="list-group-item">Review Count: ${
+                                                  listObjects[i].Review_Count
+                                                }</li>
+                                                
+                                                </li>
+                                                <li class="list-group-item"> Phone Number: ${listObjects[i].Telephone}
+                                                </li>
+                                                <li class="list-group-item"><a href="${
+                                                  listObjects[i].Link
+                                                }" class="card-link">Click me for more Details!</a>                                            </li>
 
-                                            <li class="list-group-item">Review Count: ${
-                                              listObjects[i].Review_Count
-                                            }</li>
+                                            </ul>
+                                          </div>
 
-                                        </ul>
+                                      </div>
 
-                                        <div class="card-body text-center">
-
-                                            <a href="${
-                                              listObjects[i].Link
-                                            }" class="card-link">Click me for more Details!</a>
-
-                                        </div>
-
-                                    </div>
-
-                                 </div>`);
-    }
+                            </div>`);
   }
+}
 
 // HTML dynamic loading
 
-function restoretripPlanner(){
-  $(".firstFormPg1").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+function restoretripPlanner() {
+  $(".firstFormPg1")
+    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
   <form>
 <div class="form-group">
     <label for="exampleInputEmail1" id="heading">Origin</label>
@@ -246,9 +248,10 @@ function restoretripPlanner(){
         placeholder="YYYY/MM/DD">
 </div>
 </form>
-</div></div>`)
+</div></div>`);
 
-$(".content").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+  $(".content")
+    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
 <form>
 <div class="form-group">
     <label for="exampleInputPassword1">Number of Adults</label>
@@ -271,9 +274,10 @@ $(".content").append(`<div class="card"><div class="card-header"><h5 id="card-he
         placeholder="First Class?">
 </div>
 </form>
-</div></div>`)
+</div></div>`);
 
-$(".thirdFormPg1").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+  $(".thirdFormPg1")
+    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
 <form>
 <div class="form-group">
     <label for="exampleInputPassword1">Non-Stop?</label>
@@ -296,14 +300,15 @@ $(".thirdFormPg1").append(`<div class="card"><div class="card-header"><h5 id="ca
         placeholder="How Many Results do you want to see?">
 </div>
 </form>
-</div></div>`)
+</div></div>`);
 
-$(".firstFormSubmitButton").append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
- </form></div></div>`)}
+  $(".firstFormSubmitButton")
+    .append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
+ </form></div></div>`);
+}
 
-function restorepointsOfInterest(){
-
-    $(".contents").append(`<div class="card">
+function restorepointsOfInterest() {
+  $(".contents").append(`<div class="card">
     <div class="card-header">
         <h5 id="cardHeader">Places to Visit!</h5>
     </div>
@@ -319,4 +324,5 @@ function restorepointsOfInterest(){
             <button type="submit" class="btn btn-primary" id="submitButton2">Submit</button>
         </form>
     </div>
-</div>`)}
+</div>`);
+}

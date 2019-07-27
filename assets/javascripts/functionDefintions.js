@@ -494,6 +494,7 @@ function clickSubmit() {
        }
        console.log(results)
      // console.log(getLowFareFlightOption(results))
+      $(".flightSearchResults").empty();
       getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })
   }

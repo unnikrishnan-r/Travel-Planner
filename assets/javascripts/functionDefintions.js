@@ -85,92 +85,90 @@ function getAirportCodeUsingCityName(cityName) {
     .catch(error => console.error(error));
 }
 
-  //Function to convert city with spaces into city with + i.e New York City --> New+York+City
-  //Using RE to replace space for +
+//Function to convert city with spaces into city with + i.e New York City --> New+York+City
+//Using RE to replace space for +
 
-  function handleSpace(city) {
+function handleSpace(city) {
+  city = city.trim().replace(/ /g, "+");
 
-    city = city.trim().replace(/ /g, "+");
+  return city;
+}
 
-    return city;
+//Function takes two paramters City & (interestType is optional, defaults to attraction)
+
+//It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+
+function pointsOfinterest(city, interestType) {
+  //Handle second paramter if it is not passed
+
+  if (interestType === undefined) {
+    interestType = "attractions";
   }
 
+  //Variables that will only be declared once
 
-  //Function takes two paramters City & (interestType is optional, defaults to attraction)
+  const goodCity = handleSpace(city);
 
-  //It will make an ajax call to the Yelp API and return data pertaining to city and interest type
+  const myurl =
+    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
+    goodCity +
+    "&limit=2&term=" +
+    interestType +
+    "";
 
-  function pointsOfinterest(city, interestType) {
-    //Handle second paramter if it is not passed
+  const apiKey =
+    "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
 
-    if (interestType === undefined) {
-      interestType = "attractions";
+  //Make call to Yelp
+
+  $.ajax({
+    url: myurl,
+
+    //Header required as per Yelp API documentation
+
+    headers: {
+      Authorization: "Bearer " + apiKey
+    },
+
+    method: "GET",
+
+    dataType: "json"
+  }).then(function(response) {
+    for (let i in response.businesses) {
+      globalObjectslist.push({
+        Name: response.businesses[i].name,
+
+        Address: response.businesses[i].location.display_address[1],
+
+        Img: response.businesses[i].image_url,
+
+        Rating: response.businesses[i].rating,
+
+        Review_Count: response.businesses[i].review_count,
+
+        Link: response.businesses[i].url
+      });
     }
+  });
 
-    //Variables that will only be declared once
-
-    const goodCity = handleSpace(city);
-
-    const myurl =
-      "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
-      goodCity +
-      "&limit=2&term=" +
-      interestType +
-      "";
-
-    const apiKey =
-      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
-
-    //Make call to Yelp
-
-    $.ajax({
-      url: myurl,
-
-      //Header required as per Yelp API documentation
-
-      headers: {
-        Authorization: "Bearer " + apiKey
-      },
-
-      method: "GET",
-
-      dataType: "json"
-    }).then(function(response) {
-      for (let i in response.businesses) {
-        globalObjectslist.push({
-          Name: response.businesses[i].name,
-
-          Address: response.businesses[i].location.display_address[1],
-
-          Img: response.businesses[i].image_url,
-
-          Rating: response.businesses[i].rating,
-
-          Review_Count: response.businesses[i].review_count,
-
-          Link: response.businesses[i].url
-        });
-      }
-    });
-
-    //After populating response into an object (give 2 seconds for response), add poi to html
-    $("#loading").removeClass("d-none")
-    setTimeout(() => {
-      console.log(globalObjectslist)
-      $("#loading").addClass("d-none")
-      addPOI(globalObjectslist);
-    }, 2000);
-  }
+  //After populating response into an object (give 2 seconds for response), add poi to html
+  $("#loading").removeClass("d-none");
+  setTimeout(() => {
+    console.log(globalObjectslist);
+    $("#loading").addClass("d-none");
+    addPOI(globalObjectslist);
+  }, 2000);
+}
 
 //   pointsOfinterest("Toronto");
 
-  //Function to take JSON call information and create cards to display on the webpage for each point of interest
+//Function to take JSON call information and create cards to display on the webpage for each point of interest
 
-  function addPOI(listObjects) {
-    console.log(listObjects);
+function addPOI(listObjects) {
+  console.log(listObjects);
 
-    for (let i in listObjects) {
-      $("#poiRow").append(`<div class="col-lg-6">
+  for (let i in listObjects) {
+    $("#poiRow").append(`<div class="col-lg-6">
 
                                     <div class="card" style="width: 18rem;">
 
@@ -213,13 +211,14 @@ function getAirportCodeUsingCityName(cityName) {
                                     </div>
 
                                  </div>`);
-    }
   }
+}
 
 // HTML dynamic loading
 
-function restoretripPlanner(){
-  $(".firstFormPg1").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+function restoretripPlanner() {
+  $(".firstFormPg1")
+    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
   <form>
 <div class="form-group">
     <label for="exampleInputEmail1" id="heading">Origin</label>
@@ -246,9 +245,10 @@ function restoretripPlanner(){
         placeholder="YYYY/MM/DD">
 </div>
 </form>
-</div></div>`)
+</div></div>`);
 
-$(".content").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+  $(".content")
+    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
 <form>
 <div class="form-group">
     <label for="exampleInputPassword1">Number of Adults</label>
@@ -271,9 +271,10 @@ $(".content").append(`<div class="card"><div class="card-header"><h5 id="card-he
         placeholder="First Class?">
 </div>
 </form>
-</div></div>`)
+</div></div>`);
 
-$(".thirdFormPg1").append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
+  $(".thirdFormPg1")
+    .append(`<div class="card"><div class="card-header"><h5 id="card-header">Flight Search</h5></div><div class="card-body">
 <form>
 <div class="form-group">
     <label for="exampleInputPassword1">Non-Stop?</label>
@@ -296,14 +297,15 @@ $(".thirdFormPg1").append(`<div class="card"><div class="card-header"><h5 id="ca
         placeholder="How Many Results do you want to see?">
 </div>
 </form>
-</div></div>`)
+</div></div>`);
 
-$(".firstFormSubmitButton").append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
- </form></div></div>`)}
+  $(".firstFormSubmitButton")
+    .append(`<button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
+ </form></div></div>`);
+}
 
-function restorepointsOfInterest(){
-
-    $(".contents").append(`<div class="card">
+function restorepointsOfInterest() {
+  $(".contents").append(`<div class="card">
     <div class="card-header">
         <h5 id="cardHeader">Places to Visit!</h5>
     </div>
@@ -319,4 +321,141 @@ function restorepointsOfInterest(){
             <button type="submit" class="btn btn-primary" id="submitButton2">Submit</button>
         </form>
     </div>
-</div>`)}
+</div>`);
+}
+
+/*Function to display  flight Search on HTML. The arguments expected by the function are:
+1. Original Flight Search Request Object
+2. Response from the API
+*/
+function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
+  //A Container is added to the HTML body which will hold all the flight results
+  $("body").append(
+    $("<div>", {
+      class: "container flightSearchResults"
+    })
+  );
+
+  /*The response is structured as data, dictionaries and meta
+  data holds all the flight details ; dictionaries is to convert codes to user friendly text
+  data --> offerItem --> services --> segments
+
+  So looping through each offers to begin with
+  */
+  flightSearchResult.data.forEach(function(flightOffer, index) {
+    //Each offer can have "services" "price", (2 more which we are not using currently)
+    flightOffer.offerItems.forEach(function(offerItems) {
+      //Create a card per offer
+      $(".flightSearchResults").append(
+        $("<div>", {
+          class: "card card-header offer-group ",
+          offerNumber: `${index}`,
+          text:
+            "Offer Number: " +
+            `${index + 1}` +
+            " ; Round Trip @ CAD " +
+            offerItems.price.total
+        }).append(
+          $("<ul>", {
+            class: "list-group list-group-flush"
+          })
+        )
+      );
+
+      //"Services" can have 2 "segments" , one for onward and one for return trip
+      offerItems.services.forEach(function(services, index2) {
+        if (index2 === 0) {
+          var offerItemText = "Flights to:" + flightSearchRequest.destination;
+          var flightDirection = "onward";
+        } else {
+          var offerItemText = "Flights to:" + flightSearchRequest.origin;
+          var flightDirection = "return";
+        }
+        // Adding a item in the card group for each leg of the trip
+        $('[offerNumber="' + index + '"]')
+          .children()
+          .append(
+            $("<li>", {
+              class: "list-group-item",
+              flightdirection: flightDirection,
+              text: offerItemText
+            })
+          );
+        // Now we are looping through to identify each segment's atttribute
+        services.segments.forEach(function(segment) {
+          var displayRoute =
+            segment.flightSegment.departure.iataCode +
+            " - " +
+            segment.flightSegment.arrival.iataCode;
+
+          var displayTimings =
+            moment(segment.flightSegment.departure.at).format("HH:MM") +
+            " - " +
+            moment(segment.flightSegment.arrival.at).format("HH:MM");
+
+          var displaySeatsLeft =
+            segment.pricingDetailPerAdult.availability + " seats left";
+
+          const airlineLogoUrl = "http://pics.avs.io/100/100/";
+          var displayAirlineLogo =
+            airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
+
+          // Adding details of each flight using a Bootstrap grid inside the card body
+          $('[offerNumber="' + index + '"]')
+            .find('[flightdirection="' + flightDirection + '"]')
+            .append(
+              $("<div>", {
+                class: "flightSegment justify-content-md-center row"
+              })
+                //Show the carrier code : EK for Emirates
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2"
+                  }).append(
+                    $("<img>", {
+                      src: displayAirlineLogo,
+                      class: "img-fluid rounded text-center"
+                    })
+                  )
+                )
+                //Show the route of the flight
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displayRoute
+                  })
+                )
+                //Show the timings, departure and arrival
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displayTimings
+                  })
+                )
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: "Duration"
+                  })
+                )
+
+                //Display the number of seats left
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: displaySeatsLeft
+                  })
+                )
+                //Display the class of travel
+                .append(
+                  $("<div>", {
+                    class: "col col-sm-2",
+                    text: segment.pricingDetailPerAdult.travelClass
+                  })
+                )
+            );
+        });
+      });
+    });
+  });
+}

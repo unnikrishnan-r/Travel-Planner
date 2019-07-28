@@ -65,7 +65,6 @@ function makeamadeusApiCall(access_token, queryString) {
     .then(function(data) {
       return data;
     })
-    .catch(error => console.error(error));
 }
 
 //Function that takes a cityName and returns the iataCode
@@ -106,7 +105,7 @@ function pointsOfinterest(city, interestType) {
   }
   //After populating response into an object (give 2 seconds for response), add poi to html
   $("#loading").removeClass("d-none");
-  
+
   //Variables that will only be declared once
 
   const goodCity = handleSpace(city);
@@ -137,7 +136,7 @@ function pointsOfinterest(city, interestType) {
     dataType: "json"
   }).then(function(response) {
     for (let i in response.businesses) {
-      console.log(response.businesses[i])
+      console.log(response.businesses[i]);
       globalObjectslist.push({
         Name: response.businesses[i].name,
 
@@ -168,11 +167,10 @@ function pointsOfinterest(city, interestType) {
 
 function addPOI(listObjects) {
   for (let i in listObjects) {
-    $("#poiCon").append(`<div class="card poiCard" style="width: 100%;">                                      
+    $("#poiCon")
+      .append(`<div class="card poiCard" style="width: 100%;">                                      
                                         <h5 class="card-header text-center">
-                                        <span>${
-                                          listObjects[i].Name
-                                        }</span>
+                                        <span>${listObjects[i].Name}</span>
                                         <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
                                         ${listObjects[i].Address}</span>
                                         </h5>                                        
@@ -201,7 +199,9 @@ function addPOI(listObjects) {
                                                 }</li>
                                                 
                                                 </li>
-                                                <li class="list-group-item"> Phone Number: ${listObjects[i].Telephone}
+                                                <li class="list-group-item"> Phone Number: ${
+                                                  listObjects[i].Telephone
+                                                }
                                                 </li>
                                                 <li class="list-group-item"><a href="${
                                                   listObjects[i].Link
@@ -218,7 +218,8 @@ function addPOI(listObjects) {
 
 // HTML dynamic loading
 
-function restoretripPlanner(){$(".container").append(`<div class="card">
+function restoretripPlanner() {
+  $(".container").append(`<div class="card">
 <div class="card-header">
     <h5 id="header">Flight Search</h5>
 </div>
@@ -302,9 +303,8 @@ function restoretripPlanner(){$(".container").append(`<div class="card">
         </div>
     </div>
 </div>
-</div>`)}
-
-
+</div>`);
+}
 
 function restorepointsOfInterest() {
   $(".contents").append(`<div class="card">
@@ -331,172 +331,257 @@ function restorepointsOfInterest() {
 2. Response from the API
 */
 function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
-  //A Container is added to the HTML body which will hold all the flight results
-  $("body").append(
-    $("<div>", {
-      class: "container flightSearchResults"
-    })
-  );
+  if (flightSearchResult.hasOwnProperty("errors")) {
+    $(".flightErrorMessage").empty();
+    $(".flightSearchResults").empty();
+    console.log("Cleared Result box");
+    handleApiCallError(flightSearchResult);
+  } else {
+    //A Container is added to the HTML body which will hold all the flight results
+    $("body").append(
+      $("<div>", {
+        class: "container flightSearchResults"
+      })
+    );
 
-  /*The response is structured as data, dictionaries and meta
+    /*The response is structured as data, dictionaries and meta
   data holds all the flight details ; dictionaries is to convert codes to user friendly text
   data --> offerItem --> services --> segments
 
   So looping through each offers to begin with
   */
-  flightSearchResult.data.forEach(function(flightOffer, index) {
-    //Each offer can have "services" "price", (2 more which we are not using currently)
-    flightOffer.offerItems.forEach(function(offerItems) {
-      //Create a card per offer
-      $(".flightSearchResults").append(
-        $("<div>", {
-          class: "card card-header offer-group ",
-          offerNumber: `${index}`,
-          text:
-            "Offer Number: " +
-            `${index + 1}` +
-            " ; Round Trip @ CAD " +
-            offerItems.price.total
-        }).append(
-          $("<ul>", {
-            class: "list-group list-group-flush"
-          })
-        )
-      );
-
-      //"Services" can have 2 "segments" , one for onward and one for return trip
-      offerItems.services.forEach(function(services, index2) {
-        if (index2 === 0) {
-          var offerItemText = "Flights to:" + flightSearchRequest.destination;
-          var flightDirection = "onward";
-        } else {
-          var offerItemText = "Flights to:" + flightSearchRequest.origin;
-          var flightDirection = "return";
-        }
-        // Adding a item in the card group for each leg of the trip
-        $('[offerNumber="' + index + '"]')
-          .children()
-          .append(
-            $("<li>", {
-              class: "list-group-item",
-              flightdirection: flightDirection,
-              text: offerItemText
+    flightSearchResult.data.forEach(function(flightOffer, index) {
+      //Each offer can have "services" "price", (2 more which we are not using currently)
+      flightOffer.offerItems.forEach(function(offerItems) {
+        //Create a card per offer
+        $(".flightSearchResults").append(
+          $("<div>", {
+            class: "card card-header offer-group ",
+            offerNumber: `${index}`,
+            text:
+              "Offer Number: " +
+              `${index + 1}` +
+              " ; Round Trip @ CAD " +
+              offerItems.price.total
+          }).append(
+            $("<ul>", {
+              class: "list-group list-group-flush"
             })
-          );
-        // Now we are looping through to identify each segment's atttribute
-        services.segments.forEach(function(segment) {
-          var displayRoute =
-            segment.flightSegment.departure.iataCode +
-            " - " +
-            segment.flightSegment.arrival.iataCode;
+          )
+        );
 
-          var displayTimings =
-            moment.parseZone(segment.flightSegment.departure.at).format("HH:mm") +
-            " - " +
-            moment.parseZone(segment.flightSegment.arrival.at).format("HH:mm");
-            console.log(segment.flightSegment.departure.at , segment.flightSegment.arrival.at)
-
-          var displayDuration = moment(segment.flightSegment.arrival.at).diff(moment(segment.flightSegment.departure.at))
-          displayDuration = moment.duration(displayDuration).hours() + "h " + moment.duration(displayDuration).minutes() + "m"
-          console.log(displayDuration)
-          var displaySeatsLeft =
-            segment.pricingDetailPerAdult.availability + " seats left";
-
-          const airlineLogoUrl = "http://pics.avs.io/100/100/";
-          var displayAirlineLogo =
-            airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
-
-          // Adding details of each flight using a Bootstrap grid inside the card body
+        //"Services" can have 2 "segments" , one for onward and one for return trip
+        offerItems.services.forEach(function(services, index2) {
+          if (index2 === 0) {
+            var offerItemText = "Flights to:" + flightSearchRequest.destination;
+            var flightDirection = "onward";
+          } else {
+            var offerItemText = "Flights to:" + flightSearchRequest.origin;
+            var flightDirection = "return";
+          }
+          // Adding a item in the card group for each leg of the trip
           $('[offerNumber="' + index + '"]')
-            .find('[flightdirection="' + flightDirection + '"]')
+            .children()
             .append(
-              $("<div>", {
-                class: "flightSegment justify-content-md-center row"
+              $("<li>", {
+                class: "list-group-item",
+                flightdirection: flightDirection,
+                text: offerItemText
               })
-                //Show the carrier code : EK for Emirates
-                .append(
-                  $("<div>", {
-                    class: "col col-sm-2"
-                  }).append(
-                    $("<img>", {
-                      src: displayAirlineLogo,
-                      class: "img-fluid rounded text-center"
+            );
+          // Now we are looping through to identify each segment's atttribute
+          services.segments.forEach(function(segment) {
+            var displayRoute =
+              segment.flightSegment.departure.iataCode +
+              " - " +
+              segment.flightSegment.arrival.iataCode;
+
+            var displayTimings =
+              moment
+                .parseZone(segment.flightSegment.departure.at)
+                .format("HH:mm") +
+              " - " +
+              moment
+                .parseZone(segment.flightSegment.arrival.at)
+                .format("HH:mm");
+            console.log(
+              segment.flightSegment.departure.at,
+              segment.flightSegment.arrival.at
+            );
+
+            var displayDuration = moment(segment.flightSegment.arrival.at).diff(
+              moment(segment.flightSegment.departure.at)
+            );
+            displayDuration =
+              moment.duration(displayDuration).hours() +
+              "h " +
+              moment.duration(displayDuration).minutes() +
+              "m";
+            console.log(displayDuration);
+            var displaySeatsLeft =
+              segment.pricingDetailPerAdult.availability + " seats left";
+
+            const airlineLogoUrl = "http://pics.avs.io/100/100/";
+            var displayAirlineLogo =
+              airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
+
+            // Adding details of each flight using a Bootstrap grid inside the card body
+            $('[offerNumber="' + index + '"]')
+              .find('[flightdirection="' + flightDirection + '"]')
+              .append(
+                $("<div>", {
+                  class: "flightSegment justify-content-md-center row"
+                })
+                  //Show the carrier code : EK for Emirates
+                  .append(
+                    $("<div>", {
+                      class: "col col-sm-2"
+                    }).append(
+                      $("<img>", {
+                        src: displayAirlineLogo,
+                        class: "img-fluid rounded text-center"
+                      })
+                    )
+                  )
+                  //Show the route of the flight
+                  .append(
+                    $("<div>", {
+                      class: "col col-sm-2",
+                      text: displayRoute
                     })
                   )
-                )
-                //Show the route of the flight
-                .append(
-                  $("<div>", {
-                    class: "col col-sm-2",
-                    text: displayRoute
-                  })
-                )
-                //Show the timings, departure and arrival
-                .append(
-                  $("<div>", {
-                    class: "col col-sm-2",
-                    text: displayTimings
-                  })
-                )
-                .append(
-                  $("<div>", {
-                    class: "col col-sm-2",
-                    text: displayDuration
-                  })
-                )
+                  //Show the timings, departure and arrival
+                  .append(
+                    $("<div>", {
+                      class: "col col-sm-2",
+                      text: displayTimings
+                    })
+                  )
+                  .append(
+                    $("<div>", {
+                      class: "col col-sm-2",
+                      text: displayDuration
+                    })
+                  )
 
-                //Display the number of seats left
-                .append(
-                  $("<div>", {
-                    class: "col col-sm-2",
-                    text: displaySeatsLeft
-                  })
-                )
-                //Display the class of travel
-                .append(
-                  $("<div>", {
-                    class: "col col-sm-2",
-                    text: segment.pricingDetailPerAdult.travelClass
-                  })
-                )
-            );
+                  //Display the number of seats left
+                  .append(
+                    $("<div>", {
+                      class: "col col-sm-2",
+                      text: displaySeatsLeft
+                    })
+                  )
+                  //Display the class of travel
+                  .append(
+                    $("<div>", {
+                      class: "col col-sm-2",
+                      text: segment.pricingDetailPerAdult.travelClass
+                    })
+                  )
+              );
+          });
         });
       });
     });
-  });
+  }
 }
 
+//Function to gracefully handle errors from the API Call
+function handleApiCallError(error) {
+  console.log("Error Caught", error);
+  switch (error.errors[0].source.parameter) {
+    case "origin":
+      var erroredParameter = "Origin";
+      break;
+
+    case "destination":
+      var erroredParameter = "Destination";
+      break;
+
+    case "returnDate":
+      var erroredParameter = "Return Date";
+      break;
+
+    case "departureDate":
+      var erroredParameter = "Departure Date";
+      break;
+
+    case "maxPrice":
+      var erroredParameter = "Max Price";
+      break;
+
+    case "adults":
+      var erroredParameter = "Adults";
+      break;
+
+    case "children":
+      var erroredParameter = "Children";
+      break;
+    case "adults, seniors, children":
+      var erroredParameter = "Passengers";
+  }
+
+  switch (error.errors[0].status) {
+    case 400:
+      var errorMessage =
+        "Oops, Looks like we hit a snag :( .. " +
+        '"' +
+        erroredParameter +
+        '"' +
+        " appears to have caused it." +
+        error.errors[0].detail;
+      break;
+
+    case 404:
+      var errorMessage = error.errors[0].detail;
+  }
+
+  $("body").append(
+    $("<div>", {
+      class: "container flightErrorMessage"
+    }).append(
+      $("<div>", {
+        class: "card card-header offer-group error-message",
+        text: errorMessage
+      })
+    )
+  );
+}
 // On Click of submit
 
 function clickSubmit() {
-    
-  $("body").on("click","#submitButton1",function(event){
-      
-      event.preventDefault();
+  $("body").on("click", "#submitButton1", function(event) {
+    event.preventDefault();
 
-      var value = $("#Nonstop :selected").val()
-      
-      
-      let results = {
-        origin: $("#origin").val().trim(),
-        destination: $("#destination").val().trim(),
-        departureDate: $("#departure").val(),
-        returnDate: $("#arrival").val(),
-        adults: $("#Adults :selected").val(),
-        children: $("#Children :selected").val(),
-        travelClass: $("#class :selected").val(),
-        nonStop: "false",
-        //Defaulting currency and max in the API call
-        currency:"CAD",
-        maxPrice: $("#Price").val(),
-        //max: $("#results").val().trim()
-      }
-      if (value === "Continous") {
-         results.nonStop = "true"                
-       }
-       console.log(results)
-     // console.log(getLowFareFlightOption(results))
-      $(".flightSearchResults").empty();
-      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
-  })
-  }
+    var value = $("#Nonstop :selected").val();
+
+    let results = {
+      origin: $("#origin")
+        .val()
+        .trim(),
+      destination: $("#destination")
+        .val()
+        .trim(),
+      departureDate: $("#departure").val(),
+      returnDate: $("#arrival").val(),
+      adults: $("#Adults :selected").val(),
+      children: $("#Children :selected").val(),
+      travelClass: $("#class :selected").val(),
+      nonStop: "false",
+      //Defaulting currency and max in the API call
+      currency: "CAD",
+      maxPrice: $("#Price").val()
+      //max: $("#results").val().trim()
+    };
+    if (value === "Continous") {
+      results.nonStop = "true";
+    }
+    console.log(results);
+    // console.log(getLowFareFlightOption(results))
+    $(".flightSearchResults").empty();
+    $(".flightErrorMessage").empty();
+    getLowFareFlightOption(results).then(resp =>
+      displayFlightSearchResults(results, resp)
+    );
+  });
+}

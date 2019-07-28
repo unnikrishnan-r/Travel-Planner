@@ -730,7 +730,8 @@ function clickSubmit() {
 
 
        // console.log(getLowFareFlightOption(results))
-      $(".flightSearchResults").empty();
-      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
+       $(".flightErrorMessage").empty();
+       $(".flightSearchResults").empty();
+     getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })
   }

@@ -137,7 +137,7 @@ function pointsOfinterest(city, interestType) {
     dataType: "json"
   }).then(function(response) {
     for (let i in response.businesses) {
-      console.log(response.businesses[i])
+      
       globalObjectslist.push({
         Name: response.businesses[i].name,
 
@@ -151,18 +151,54 @@ function pointsOfinterest(city, interestType) {
 
         Link: response.businesses[i].url,
 
-        Telephone: response.businesses[i].display_phone
+        Telephone: response.businesses[i].display_phone,
+
+        Business: response.businesses[i].id
       });
     }
+    poiReviews(globalObjectslist)
     setTimeout(() => {
       //console.log(globalObjectslist);
-      $("#loading").addClass("d-none");
+      $("#loading").addClass("d-none");      
       addPOI(globalObjectslist);
     }, 500);
   });
 }
 
-//   pointsOfinterest("Toronto");
+function poiReviews(globalObjectslist) {
+  for (let i in globalObjectslist) {
+    
+    const myurl =
+    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/"+globalObjectslist[i].Business+"/reviews";
+  
+    const apiKey =
+      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
+  
+    //Make call to Yelp
+  
+    $.ajax({
+      url: myurl,
+  
+      //Header required as per Yelp API documentation
+  
+      headers: {
+        Authorization: "Bearer " + apiKey
+      },
+  
+      method: "GET",
+  
+      dataType: "json"
+    }).then(function(response){
+      globalObjectslist[i].Review = {        
+        ReviewerName : response.reviews[0].user.name,
+        Text : response.reviews[0].text,
+        ReviewerRating: response.reviews[0].rating,
+        Timestamp : response.reviews[0].time_created
+      }
+    })
+  }
+  // console.log(globalObjectslist)
+}
 
 //Function to take JSON call information and create cards to display on the webpage for each point of interest
 

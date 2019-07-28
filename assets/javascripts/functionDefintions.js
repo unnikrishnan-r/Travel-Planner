@@ -524,6 +524,7 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
 }
 
 //Function to gracefully handle errors from the API Call
+
 function handleApiCallError(error) {
   console.log("Error Caught", error);
   switch (error.errors[0].source.parameter) {

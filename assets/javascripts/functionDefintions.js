@@ -267,26 +267,20 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
 </div>
 <div class="information">
     <div class="row">
-        <div class="col-md-3">
-            <label>Type of Flight</label>
-            <select class="form" id="Nonstop">
-            <option>Continous</option>
-            <option>Connecting</option>
-            </select>
+    <div class="col-md-3">
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="Continous" checked>
+        <label class="form-check-label" for="Continous">
+          Continous Flight
+        </label>
+        </div>
         </div>
         
     
-        <div class="col-md-2">
-            <label>Class</label>
-            <select class="form" id="class">
-                <option>ECONOMY</option>
-                <option>BUSINESS</option>
-                <option>FIRST</option>
-            </select>
-        </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <label>Adults</label>
             <select class="form" id="Adults">
+                <option>0</option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -302,6 +296,7 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
         <div class="col-md-2">
             <label>Children</label>
             <select class="form" id="Children">
+                <option>0</option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -600,44 +595,7 @@ function handleAccessTokenError(data){
     )
   );
 }
-// On Click of submit
 
-function clickSubmit() {
-  $("body").on("click", "#submitButton1", function(event) {
-    event.preventDefault();
-
-    var value = $("#Nonstop :selected").val();
-
-    let results = {
-      origin: $("#origin")
-        .val()
-        .trim(),
-      destination: $("#destination")
-        .val()
-        .trim(),
-      departureDate: $("#departure").val(),
-      returnDate: $("#arrival").val(),
-      adults: $("#Adults :selected").val(),
-      children: $("#Children :selected").val(),
-      travelClass: $("#class :selected").val(),
-      nonStop: "false",
-      //Defaulting currency and max in the API call
-      currency: "CAD",
-      maxPrice: $("#Price").val()
-      //max: $("#results").val().trim()
-    };
-    if (value === "Continous") {
-      results.nonStop = "true";
-    }
-    // console.log(results);
-    // console.log(getLowFareFlightOption(results))
-    $(".flightSearchResults").empty();
-    $(".flightErrorMessage").empty();
-    getLowFareFlightOption(results).then(resp =>
-      displayFlightSearchResults(results, resp)
-    );
-  });
-}
 
 
 // On Click of submit
@@ -647,9 +605,6 @@ function clickSubmit() {
   $("body").on("click","#submitButton1",function(event){
       
       event.preventDefault();
-
-      var value = $("#Nonstop :selected").val()
-      
       
       let results = {
         origin: $("#origin").val().trim(),
@@ -663,13 +618,14 @@ function clickSubmit() {
         //Defaulting currency and max in the API call
         currency:"CAD",
         maxPrice: $("#Price").val(),
-        //max: $("#results").val().trim()
+        max: 10
       }
       
       // if the trip type is continous place true in results otherwise false in results for nonStop
-      if (value === "Continous") {
+      if ($("#Continous").is(":checked")) {
          results.nonStop = "true"                
        }
+
        
        // parse through the object and delete all empty variables. Pass those to the API flight search call
         inputFields = ["origin","destination","departureDate","returnDate","adults","children","travelClass","nonStop","currency","maxPrice"]

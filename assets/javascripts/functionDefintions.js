@@ -218,7 +218,7 @@ function addPOI(listObjects) {
 
 // HTML dynamic loading
 
-function restoretripPlanner(){$(".container").append(`<div class="card">
+function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
 <div class="card-header">
     <h5 id="header">Flight Search</h5>
 </div>
@@ -466,6 +466,8 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   });
 }
 
+
+
 // On Click of submit
 
 function clickSubmit() {
@@ -491,11 +493,71 @@ function clickSubmit() {
         maxPrice: $("#Price").val(),
         //max: $("#results").val().trim()
       }
+      
+      // if the trip type is continous place true in results otherwise false in results for nonStop
       if (value === "Continous") {
          results.nonStop = "true"                
        }
+       
+       // parse through the object and delete all empty variables. Pass those to the API flight search call
+        inputFields = ["origin","destination","departureDate","returnDate","adults","children","travelClass","nonStop","currency","maxPrice"]
+      
+       for (i=0; i < inputFields.length; i++) {
+         if (results[inputFields[i]] == null || results[inputFields[i]] == "") {
+           delete results[inputFields[i]]
+         }
+       }
        console.log(results)
-     // console.log(getLowFareFlightOption(results))
+
+       // Make sure Departure date, Origin and Destination are filled in
+       var invalidEntries = ["departureDate", "origin", "destination"]
+       var alerts = []
+       var forAlert = "Please fill out"
+       for (i=0; i < invalidEntries.length; i++){
+         if (results[invalidEntries[i]]) {
+         }
+         else {
+          alerts.push(invalidEntries[i])
+         }
+       }
+
+       // Sets up the alert
+
+       for (i=0; i < alerts.length; i++){
+         if (alerts[i] === "departureDate"){
+          alerts.splice(i, 1,"Departure Date")
+         }
+         else if (alerts[i] === "origin") {
+          alerts.splice(i, 1,"Origin")
+         }
+         else if (alerts[i] === "destination") {
+          alerts.splice(i, 1,"Destination")
+         }
+       }
+       
+       // Creates the alert
+
+       for (i=0; i < alerts.length; i++) {
+         forAlert = forAlert + " " + alerts[i]
+       }
+
+       // Performs the alert
+
+       if (results["departureDate"] && results["origin"] && results["destination"]) {
+       }
+      else {
+        alert(forAlert)
+      }
+
+      // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
+      var currentDate = moment()
+      console.log(currentDate.diff(results["departureDate"]))
+      if (currentDate.diff(results["departureDate"]) > 0) {
+        alert("Error: Invalid Departure Date")
+      }
+
+
+       // console.log(getLowFareFlightOption(results))
       $(".flightSearchResults").empty();
       getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })

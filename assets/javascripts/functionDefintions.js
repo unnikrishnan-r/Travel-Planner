@@ -143,7 +143,7 @@ function pointsOfinterest(city, interestType) {
     dataType: "json"
   }).then(function(response) {
     for (let i in response.businesses) {
-      console.log(response.businesses[i]);
+      
       globalObjectslist.push({
         Name: response.businesses[i].name,
 
@@ -157,18 +157,54 @@ function pointsOfinterest(city, interestType) {
 
         Link: response.businesses[i].url,
 
-        Telephone: response.businesses[i].display_phone
+        Telephone: response.businesses[i].display_phone,
+
+        Business: response.businesses[i].id
       });
     }
+    poiReviews(globalObjectslist)
     setTimeout(() => {
       //console.log(globalObjectslist);
-      $("#loading").addClass("d-none");
+      $("#loading").addClass("d-none");      
       addPOI(globalObjectslist);
     }, 500);
   });
 }
 
-//   pointsOfinterest("Toronto");
+function poiReviews(globalObjectslist) {
+  for (let i in globalObjectslist) {
+    
+    const myurl =
+    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/"+globalObjectslist[i].Business+"/reviews";
+  
+    const apiKey =
+      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
+  
+    //Make call to Yelp
+  
+    $.ajax({
+      url: myurl,
+  
+      //Header required as per Yelp API documentation
+  
+      headers: {
+        Authorization: "Bearer " + apiKey
+      },
+  
+      method: "GET",
+  
+      dataType: "json"
+    }).then(function(response){
+      globalObjectslist[i].Review = {        
+        ReviewerName : response.reviews[0].user.name,
+        Text : response.reviews[0].text,
+        ReviewerRating: response.reviews[0].rating,
+        Timestamp : response.reviews[0].time_created
+      }
+    })
+  }
+  // console.log(globalObjectslist)
+}
 
 //Function to take JSON call information and create cards to display on the webpage for each point of interest
 
@@ -225,8 +261,7 @@ function addPOI(listObjects) {
 
 // HTML dynamic loading
 
-function restoretripPlanner() {
-  $(".container").append(`<div class="card">
+function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
 <div class="card-header">
     <h5 id="header">Flight Search</h5>
 </div>
@@ -602,3 +637,99 @@ function clickSubmit() {
     );
   });
 }
+
+
+// On Click of submit
+
+function clickSubmit() {
+    
+  $("body").on("click","#submitButton1",function(event){
+      
+      event.preventDefault();
+
+      var value = $("#Nonstop :selected").val()
+      
+      
+      let results = {
+        origin: $("#origin").val().trim(),
+        destination: $("#destination").val().trim(),
+        departureDate: $("#departure").val(),
+        returnDate: $("#arrival").val(),
+        adults: $("#Adults :selected").val(),
+        children: $("#Children :selected").val(),
+        travelClass: $("#class :selected").val(),
+        nonStop: "false",
+        //Defaulting currency and max in the API call
+        currency:"CAD",
+        maxPrice: $("#Price").val(),
+        //max: $("#results").val().trim()
+      }
+      
+      // if the trip type is continous place true in results otherwise false in results for nonStop
+      if (value === "Continous") {
+         results.nonStop = "true"                
+       }
+       
+       // parse through the object and delete all empty variables. Pass those to the API flight search call
+        inputFields = ["origin","destination","departureDate","returnDate","adults","children","travelClass","nonStop","currency","maxPrice"]
+      
+       for (i=0; i < inputFields.length; i++) {
+         if (results[inputFields[i]] == null || results[inputFields[i]] == "") {
+           delete results[inputFields[i]]
+         }
+       }
+       console.log(results)
+
+       // Make sure Departure date, Origin and Destination are filled in
+       var invalidEntries = ["departureDate", "origin", "destination"]
+       var alerts = []
+       var forAlert = "Please fill out"
+       for (i=0; i < invalidEntries.length; i++){
+         if (results[invalidEntries[i]]) {
+         }
+         else {
+          alerts.push(invalidEntries[i])
+         }
+       }
+
+       // Sets up the alert
+
+       for (i=0; i < alerts.length; i++){
+         if (alerts[i] === "departureDate"){
+          alerts.splice(i, 1,"Departure Date")
+         }
+         else if (alerts[i] === "origin") {
+          alerts.splice(i, 1,"Origin")
+         }
+         else if (alerts[i] === "destination") {
+          alerts.splice(i, 1,"Destination")
+         }
+       }
+       
+       // Creates the alert
+
+       for (i=0; i < alerts.length; i++) {
+         forAlert = forAlert + " " + alerts[i]
+       }
+
+       // Performs the alert
+
+       if (results["departureDate"] && results["origin"] && results["destination"]) {
+       }
+      else {
+        alert(forAlert)
+      }
+
+      // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
+      var currentDate = moment()
+      console.log(currentDate.diff(results["departureDate"]))
+      if (currentDate.diff(results["departureDate"]) > 0) {
+        alert("Error: Invalid Departure Date")
+      }
+
+
+       // console.log(getLowFareFlightOption(results))
+      $(".flightSearchResults").empty();
+      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
+  })
+  }

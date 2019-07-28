@@ -339,9 +339,6 @@ function restorepointsOfInterest() {
 */
 function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   if (flightSearchResult.hasOwnProperty("errors")) {
-    $(".flightErrorMessage").empty();
-    $(".flightSearchResults").empty();
-    console.log("Cleared Result box");
     handleApiCallError(flightSearchResult);
   } else {
     //A Container is added to the HTML body which will hold all the flight results
@@ -423,7 +420,7 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
             var displaySeatsLeft =
               segment.pricingDetailPerAdult.availability + " seats left";
 
-            const airlineLogoUrl = "http://pics.avs.io/100/100/";
+            const airlineLogoUrl = "http://pics.avs.io/100/60/";
             var displayAirlineLogo =
               airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
 

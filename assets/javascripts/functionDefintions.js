@@ -38,7 +38,14 @@ function getLowFareFlightOption(flightSearchObject) {
   //Get Access Token for authorizing the API Call
   return getAccessToken()
     .then(function(data) {
-      return makeamadeusApiCall(data.access_token, queryString);
+      if (data.hasOwnProperty("error")) {
+        $(".flightErrorMessage").empty();
+        $(".flightSearchResults").empty();
+        console.log("Cleared Result box");
+        handleAccessTokenError(data);
+      } else {
+        return makeamadeusApiCall(data.access_token, queryString);
+      }
     })
     .catch(error => console.error(error));
 }
@@ -49,7 +56,7 @@ function formQueryString(url, SearchObject) {
   for (var property in SearchObject) {
     queryString = `${queryString}&${property}=${SearchObject[property]}`;
   }
-  console.log(url + queryString);
+  // console.log(url + queryString);
   return url + queryString;
 }
 
@@ -64,7 +71,7 @@ function makeamadeusApiCall(access_token, queryString) {
     .then(response => response.json())
     .then(function(data) {
       return data;
-    })
+    });
 }
 
 //Function that takes a cityName and returns the iataCode
@@ -404,10 +411,6 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
               moment
                 .parseZone(segment.flightSegment.arrival.at)
                 .format("HH:mm");
-            console.log(
-              segment.flightSegment.departure.at,
-              segment.flightSegment.arrival.at
-            );
 
             var displayDuration = moment(segment.flightSegment.arrival.at).diff(
               moment(segment.flightSegment.departure.at)
@@ -417,7 +420,6 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
               "h " +
               moment.duration(displayDuration).minutes() +
               "m";
-            console.log(displayDuration);
             var displaySeatsLeft =
               segment.pricingDetailPerAdult.availability + " seats left";
 
@@ -547,6 +549,21 @@ function handleApiCallError(error) {
     )
   );
 }
+
+//Function to handle errors when access token is not available:
+function handleAccessTokenError(data){
+  console.log(data.error_description);
+  $("body").append(
+    $("<div>", {
+      class: "container flightErrorMessage"
+    }).append(
+      $("<div>", {
+        class: "card card-header offer-group error-message",
+        text: data.error_description
+      })
+    )
+  );
+}
 // On Click of submit
 
 function clickSubmit() {
@@ -576,7 +593,7 @@ function clickSubmit() {
     if (value === "Continous") {
       results.nonStop = "true";
     }
-    console.log(results);
+    // console.log(results);
     // console.log(getLowFareFlightOption(results))
     $(".flightSearchResults").empty();
     $(".flightErrorMessage").empty();

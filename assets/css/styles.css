@@ -22,7 +22,7 @@
 }
 
 .poiImages {
-width: 250px;
+width: 300px;
 height: 175px;
 object-fit: contain;
 padding-left: 10px;
@@ -42,4 +42,16 @@ padding-left: 10px;
 }
 #submitButton1{
     margin-top: 30px;
+}
+
+.reviewerText, .timeStamp {
+    font-family: 'News Cycle', sans-serif;
+    font-weight: bold;
+}
+
+.reviewerName {
+    font-style: italic; 
+    font-family: 'Courgette', cursive;
+    /* font-family: 'Dancing Script', cursive;
+    font-size: 1.5em; */
 }

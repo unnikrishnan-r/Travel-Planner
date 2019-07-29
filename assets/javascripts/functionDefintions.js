@@ -39,8 +39,8 @@ function getLowFareFlightOption(flightSearchObject) {
   return getAccessToken()
     .then(function(data) {
       if (data.hasOwnProperty("error")) {
-        $(".flightErrorMessage").empty();
-        $(".flightSearchResults").empty();
+        $(".flightErrorMessage").remove();
+        $(".flightSearchResults").remove();
         console.log("Cleared Result box");
         handleAccessTokenError(data);
       } else {
@@ -373,12 +373,13 @@ function restorepointsOfInterest() {
 */
 function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   if (flightSearchResult.hasOwnProperty("errors")) {
-    $(".flightErrorMessage").empty();
-    $(".flightSearchResults").empty();
+    $(".flightErrorMessage").remove();
+    $(".flightSearchResults").remove();
     console.log("Cleared Result box");
     handleApiCallError(flightSearchResult);
   } else {
     //A Container is added to the HTML body which will hold all the flight results
+    console.log("Adding flight search results")
     $("body").append(
       $("<div>", {
         class: "container flightSearchResults"
@@ -690,8 +691,9 @@ function clickSubmit() {
 
 
        // console.log(getLowFareFlightOption(results))
-       $(".flightErrorMessage").empty();
-       $(".flightSearchResults").empty();
+       $(".flightErrorMessage").remove();
+       $(".flightSearchResults").remove();
+       console.log("Cleared Prev")
      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })
   }

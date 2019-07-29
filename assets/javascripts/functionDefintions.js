@@ -39,8 +39,8 @@ function getLowFareFlightOption(flightSearchObject) {
   return getAccessToken()
     .then(function(data) {
       if (data.hasOwnProperty("error")) {
-        $(".flightErrorMessage").empty();
-        $(".flight  SearchResults").empty();
+        $(".flightErrorMessage").remove();
+        $(".flightSearchResults").remove();
         console.log("Cleared Result box");
         handleAccessTokenError(data);
       } else {
@@ -167,17 +167,13 @@ function pointsOfinterest(city, interestType) {
       });
     }
     poiReviews(globalObjectslist)
-    setTimeout(() => {
-      //console.log(globalObjectslist);
-      $("#loading").addClass("d-none");      
-      addPOI(globalObjectslist);
-    }, 500);
   });
 }
 
 function poiReviews(globalObjectslist) {
+  let curIteration = 0
   for (let i in globalObjectslist) {
-    
+    curIteration ++
     const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/"+globalObjectslist[i].Business+"/reviews";
   
@@ -200,14 +196,22 @@ function poiReviews(globalObjectslist) {
       dataType: "json"
     }).then(function(response){
       globalObjectslist[i].Review = {        
-        ReviewerName : response.reviews[0].user.name,
+        Name : response.reviews[0].user.name,
         Text : response.reviews[0].text,
         ReviewerRating: response.reviews[0].rating,
         Timestamp : response.reviews[0].time_created
       }
     })
   }
-  // console.log(globalObjectslist)
+  if (curIteration === 5) {
+    console.log("This will run")
+  }
+  console.log(globalObjectslist)
+  setTimeout(() => {
+    //console.log(globalObjectslist);
+    $("#loading").addClass("d-none"); 
+    addPOI(globalObjectslist)     
+  }, 5000);
 }
 
 //Function to take JSON call information and create cards to display on the webpage for each point of interest
@@ -231,7 +235,9 @@ function addPOI(listObjects) {
 
                                           </div>
                                           <div class="col-md-5">
-                                          Hold for reviews
+                                          <p class="text-left reviewerName">- ${listObjects[i].Review.Name}</p>
+                                          <h5 class="reviewerText">"${listObjects[i].Review.Text}"</h5>
+                                          <p class="text-right">${moment(listObjects[i].Review.Timestamp).format("dddd, MMMM Do YYYY")}</p>                                          
                                           </div>
                                           <div class="col-md-3">
 
@@ -246,9 +252,7 @@ function addPOI(listObjects) {
                                                 }</li>
                                                 
                                                 </li>
-                                                <li class="list-group-item"> Phone Number: ${
-                                                  listObjects[i].Telephone
-                                                }
+                                                <li class="list-group-item"><i class="fas fa-phone"></i>${listObjects[i].Telephone}
                                                 </li>
                                                 <li class="list-group-item"><a href="${
                                                   listObjects[i].Link
@@ -373,12 +377,13 @@ function restorepointsOfInterest() {
 */
 function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   if (flightSearchResult.hasOwnProperty("errors")) {
-    $(".flightErrorMessage").empty();
-    $(".flightSearchResults").empty();
+    $(".flightErrorMessage").remove();
+    $(".flightSearchResults").remove();
     console.log("Cleared Result box");
     handleApiCallError(flightSearchResult);
   } else {
     //A Container is added to the HTML body which will hold all the flight results
+    console.log("Adding flight search results")
     $("body").append(
       $("<div>", {
         class: "container flightSearchResults"
@@ -437,6 +442,18 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
               " - " +
               segment.flightSegment.arrival.iataCode;
 
+            var displayDateDiff = moment(
+              moment
+                .parseZone(segment.flightSegment.arrival.at)
+                .format("YYYY-MM-DD")
+            ).diff(
+              moment(
+                moment
+                  .parseZone(segment.flightSegment.departure.at)
+                  .format("YYYY-MM-DD")
+              ),
+              "days"
+            );
             var displayTimings =
               moment
                 .parseZone(segment.flightSegment.departure.at)
@@ -491,7 +508,10 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
                     $("<div>", {
                       class: "col col-sm-2",
                       text: displayTimings
-                    })
+                    }).append($("<sup>", {
+                      class: "displaydatediff"+displayDateDiff,
+                      text: "+" + displayDateDiff,
+                    }))
                   )
                   .append(
                     $("<div>", {
@@ -690,8 +710,9 @@ function clickSubmit() {
 
 
        // console.log(getLowFareFlightOption(results))
-       $(".flightErrorMessage").empty();
-       $(".flightSearchResults").empty();
+       $(".flightErrorMessage").remove();
+       $(".flightSearchResults").remove();
+       console.log("Cleared Prev")
      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })
   }

@@ -1,6 +1,6 @@
-.navbar-nav {
+/* .navbar-nav {
     margin-left: 900px;
-}
+} */
 
 .card {
     margin-top : 10px;
@@ -48,4 +48,14 @@ padding-left: 10px;
     display: flex;
     align-items: center;
     flex-wrap: wrap; 
+}
+
+#poiSubmit {
+    margin-top: 30px;
+}
+
+#loadingImage {
+    margin-left: 520px;
+    height: 50px;
+    width: 50px;
 }

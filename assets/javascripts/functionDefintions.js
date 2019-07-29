@@ -40,7 +40,7 @@ function getLowFareFlightOption(flightSearchObject) {
     .then(function(data) {
       if (data.hasOwnProperty("error")) {
         $(".flightErrorMessage").empty();
-        $(".flightSearchResults").empty();
+        $(".flight  SearchResults").empty();
         console.log("Cleared Result box");
         handleAccessTokenError(data);
       } else {
@@ -62,14 +62,18 @@ function formQueryString(url, SearchObject) {
 
 //This function makes the actual API Call and returns the JSON response
 function makeamadeusApiCall(access_token, queryString) {
+  $("#loadingImage").remove();
+  $("#flightSearchInput").append(`<img id="loadingImage" src = "./assets/images/AdorableDecimalGalapagossealion-size_restricted.gif">`)
   return fetch(queryString, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + access_token
     }
   })
+  
     .then(response => response.json())
     .then(function(data) {
+      $("#loadingImage").remove();
       return data;
     });
 }
@@ -271,7 +275,7 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
         <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="Continous" checked>
         <label class="form-check-label" for="Continous">
-          Continous Flight
+          Non-Stop
         </label>
         </div>
         </div>
@@ -323,7 +327,7 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
 
         </div>
         <div class="col-md-3">
-            <label for="exampleInputPassword1">Arrival Date</label>
+            <label for="exampleInputPassword1">Return Date</label>
             <input type="date" class="form-control" id="arrival" placeholder="YYYY/MM/DD">
         </div>
         <div class="col-md-2">
@@ -336,7 +340,7 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
 
         </div>
         <div class="col-md-1">
-                <button type="submit" class="btn btn-primary" id="submitButton1">Submit</button>
+                <button type="submit" class="btn btn-primary form" id="submitButton1">Submit</button>
         </div>
     </div>
 </div>

@@ -55,3 +55,8 @@ padding-left: 10px;
     /* font-family: 'Dancing Script', cursive;
     font-size: 1.5em; */
 }
+.flightSegment{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; 
+}

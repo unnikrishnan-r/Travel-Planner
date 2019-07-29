@@ -197,17 +197,13 @@ function poiReviews(globalObjectslist) {
         ReviewerRating: response.reviews[0].rating,
         Timestamp : response.reviews[0].time_created
       }
+      if (curIteration === 5) {
+        // console.log("This will run")
+        $("#loading").addClass("d-none"); 
+        addPOI(globalObjectslist)     
+      }
     })
   }
-  if (curIteration === 5) {
-    console.log("This will run")
-  }
-  console.log(globalObjectslist)
-  setTimeout(() => {
-    //console.log(globalObjectslist);
-    $("#loading").addClass("d-none"); 
-    addPOI(globalObjectslist)     
-  }, 5000);
 }
 
 //Function to take JSON call information and create cards to display on the webpage for each point of interest

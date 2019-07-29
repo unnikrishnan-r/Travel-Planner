@@ -121,11 +121,13 @@ function pointsOfinterest(city, interestType) {
 
   const goodCity = handleSpace(city);
 
+  const goodType = handleSpace(interestType)
+
   const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
     goodCity +
     "&limit=5&term=" +
-    interestType +
+    goodType +
     "";
 
   const apiKey =
@@ -147,6 +149,7 @@ function pointsOfinterest(city, interestType) {
     dataType: "json"
   }).then(function(response) {
     for (let i in response.businesses) {
+      // console.log("Iteration Happened")
       
       globalObjectslist.push({
         Name: response.businesses[i].name,
@@ -173,45 +176,41 @@ function pointsOfinterest(city, interestType) {
 function poiReviews(globalObjectslist) {
   let curIteration = 0
   for (let i in globalObjectslist) {
-    curIteration ++
     const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/"+globalObjectslist[i].Business+"/reviews";
-  
+    
     const apiKey =
-      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
-  
+    "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
+    
     //Make call to Yelp
   
     $.ajax({
       url: myurl,
-  
+      
       //Header required as per Yelp API documentation
-  
+      
       headers: {
         Authorization: "Bearer " + apiKey
       },
   
       method: "GET",
-  
+      
       dataType: "json"
     }).then(function(response){
+      curIteration ++
       globalObjectslist[i].Review = {        
         Name : response.reviews[0].user.name,
         Text : response.reviews[0].text,
         ReviewerRating: response.reviews[0].rating,
         Timestamp : response.reviews[0].time_created
       }
+      if (curIteration === 5) {
+        // console.log("This ran")
+        $("#loading").addClass("d-none"); 
+        addPOI(globalObjectslist)     
+      }
     })
   }
-  if (curIteration === 5) {
-    console.log("This will run")
-  }
-  console.log(globalObjectslist)
-  setTimeout(() => {
-    //console.log(globalObjectslist);
-    $("#loading").addClass("d-none"); 
-    addPOI(globalObjectslist)     
-  }, 5000);
 }
 
 //Function to take JSON call information and create cards to display on the webpage for each point of interest
@@ -252,7 +251,7 @@ function addPOI(listObjects) {
                                                 }</li>
                                                 
                                                 </li>
-                                                <li class="list-group-item"><i class="fas fa-phone"></i>${listObjects[i].Telephone}
+                                                <li class="list-group-item"><i class="fas fa-phone"></i>&nbsp;&nbsp;${listObjects[i].Telephone}
                                                 </li>
                                                 <li class="list-group-item"><a href="${
                                                   listObjects[i].Link

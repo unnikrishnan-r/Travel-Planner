@@ -18,6 +18,9 @@ $("body").on("click", "#poiSubmit", function() {
   let city = $("#poiDestination")
     .val()
     .trim();
+  let poiType = $("#poiType")
+    .val()
+    .trim();
   // let poiType = $("#poiType").val().trim() COMING SOON
-  pointsOfinterest(city);
+  pointsOfinterest(city, poiType);
 });

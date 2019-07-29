@@ -438,6 +438,18 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
               " - " +
               segment.flightSegment.arrival.iataCode;
 
+            var displayDateDiff = moment(
+              moment
+                .parseZone(segment.flightSegment.arrival.at)
+                .format("YYYY-MM-DD")
+            ).diff(
+              moment(
+                moment
+                  .parseZone(segment.flightSegment.departure.at)
+                  .format("YYYY-MM-DD")
+              ),
+              "days"
+            );
             var displayTimings =
               moment
                 .parseZone(segment.flightSegment.departure.at)
@@ -492,7 +504,10 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
                     $("<div>", {
                       class: "col col-sm-2",
                       text: displayTimings
-                    })
+                    }).append($("<sup>", {
+                      class: "displaydatediff"+displayDateDiff,
+                      text: "+" + displayDateDiff,
+                    }))
                   )
                   .append(
                     $("<div>", {

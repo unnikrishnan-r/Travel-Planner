@@ -163,17 +163,13 @@ function pointsOfinterest(city, interestType) {
       });
     }
     poiReviews(globalObjectslist)
-    setTimeout(() => {
-      //console.log(globalObjectslist);
-      $("#loading").addClass("d-none");      
-      addPOI(globalObjectslist);
-    }, 500);
   });
 }
 
 function poiReviews(globalObjectslist) {
+  let curIteration = 0
   for (let i in globalObjectslist) {
-    
+    curIteration ++
     const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/"+globalObjectslist[i].Business+"/reviews";
   
@@ -196,14 +192,22 @@ function poiReviews(globalObjectslist) {
       dataType: "json"
     }).then(function(response){
       globalObjectslist[i].Review = {        
-        ReviewerName : response.reviews[0].user.name,
+        Name : response.reviews[0].user.name,
         Text : response.reviews[0].text,
         ReviewerRating: response.reviews[0].rating,
         Timestamp : response.reviews[0].time_created
       }
     })
   }
-  // console.log(globalObjectslist)
+  if (curIteration === 5) {
+    console.log("This will run")
+  }
+  console.log(globalObjectslist)
+  setTimeout(() => {
+    //console.log(globalObjectslist);
+    $("#loading").addClass("d-none"); 
+    addPOI(globalObjectslist)     
+  }, 5000);
 }
 
 //Function to take JSON call information and create cards to display on the webpage for each point of interest
@@ -227,7 +231,9 @@ function addPOI(listObjects) {
 
                                           </div>
                                           <div class="col-md-5">
-                                          Hold for reviews
+                                          <p class="text-left reviewerName">- ${listObjects[i].Review.Name}</p>
+                                          <h5 class="reviewerText">"${listObjects[i].Review.Text}"</h5>
+                                          <p class="text-right">${moment(listObjects[i].Review.Timestamp).format("dddd, MMMM Do YYYY")}</p>                                          
                                           </div>
                                           <div class="col-md-3">
 
@@ -242,9 +248,7 @@ function addPOI(listObjects) {
                                                 }</li>
                                                 
                                                 </li>
-                                                <li class="list-group-item"> Phone Number: ${
-                                                  listObjects[i].Telephone
-                                                }
+                                                <li class="list-group-item"><i class="fas fa-phone"></i>${listObjects[i].Telephone}
                                                 </li>
                                                 <li class="list-group-item"><a href="${
                                                   listObjects[i].Link

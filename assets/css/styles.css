@@ -10,11 +10,17 @@ top: 0;
 z-index: 10000;
 }
 
+#searchCon { 
+position: sticky;
+position: -webkit-sticky;
+top: 0;
+z-index: 10000;
+}
+
 .form-check {
     padding-top: 30px;
 }
 .card {
-    margin-top : 10px;
     padding-bottom: 10px;
 }
 .information {

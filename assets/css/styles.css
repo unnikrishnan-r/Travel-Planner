@@ -72,6 +72,7 @@ padding-left: 10px;
 
 .offer-group {
     transition: transform 0.3s ease, margin 0.3s ease;
+    background-color: whitesmoke
 }
 
 .offer-group:hover {

@@ -403,7 +403,11 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
       //Each offer can have "services" "price", (2 more which we are not using currently)
       flightOffer.offerItems.forEach(function(offerItems) {
         //Create a card per offer
-        createCardForNewOffer(index, offerItems.price.total);
+        if (flightSearchRequest.hasOwnProperty("returnDate")){
+          createCardForNewOffer(index, offerItems.price.total,"Round Trip");
+        }else{
+          createCardForNewOffer(index, offerItems.price.total,"One Way Trip");
+        };
         //"Services" can have 2 "segments" , one for onward and one for return trip
         offerItems.services.forEach(function(services, index2) {
           createCardSegmentHeader(
@@ -601,13 +605,14 @@ function clickSubmit() {
   })
   }
 
-function createCardForNewOffer(index, offerPrice) {
+//Function to create a new card for each offer. Also iniitiates the card with a card group and its title  
+function createCardForNewOffer(index, offerPrice,tripDirection) {
   $(".flightSearchResults").append(
     $("<div>", {
       class: "card card-header offer-group ",
       offerNumber: `${index}`,
       text:
-        "Offer Number: " + `${index + 1}` + " ; Round Trip @ CAD " + offerPrice
+        "Offer Number: " + `${index + 1}` + " ; " +tripDirection + " @ CAD " + offerPrice
     }).append(
       $("<ul>", {
         class: "list-group list-group-flush"

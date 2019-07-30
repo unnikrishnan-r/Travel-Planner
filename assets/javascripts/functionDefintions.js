@@ -223,7 +223,7 @@ function poiReviews(globalObjectslist) {
 function addPOI(listObjects) {
   for (let i in listObjects) {
     $("#poiCon")
-      .append(`<div class="card poiCard" style="width: 100%;">                                      
+      .append(`<div class="card poiCard shadow rounded" style="width: 100%;">                                      
                                         <h5 class="card-header text-center">
                                         <span>${listObjects[i].Name}</span>
                                         <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">

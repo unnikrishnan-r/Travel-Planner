@@ -1,3 +1,10 @@
+body { 
+    background: url(../images/bg.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
 
 .navbar {
     background-color: rgba(255,255,255,.5);
@@ -31,11 +38,15 @@ z-index: 10000;
 
 #image {
     height: 50px;
-    width: 150px;
+    width: 50px;
 }
 
 #header {
     text-align: center;
+}
+
+#loading {
+    padding-top: 7px;
 }
 
 .poiImages {
@@ -46,13 +57,27 @@ padding-left: 10px;
 }
 
 .poiCard {
-    margin-top: 5px;
+    margin-top: 14px;
+    transition: transform 0.3s ease, margin 0.3s ease;
+}
+
+.poiCard:hover {
+    transform: scale(1.15);
+    cursor: pointer;
 }
 
 #searchCon {
     margin-bottom: 25px;
 }
 
+.offer-group {
+    transition: transform 0.3s ease, margin 0.3s ease;
+}
+
+.offer-group:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
 
 #address {
     color:black;

@@ -463,6 +463,9 @@ function handleApiCallError(error) {
       break;
     case "adults, seniors, children":
       var erroredParameter = "Passengers";
+
+    case "departureDate/returnDate":
+      var erroredParameter = "Travel Dates "
   }
 
   switch (error.errors[0].status) {

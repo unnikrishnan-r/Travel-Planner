@@ -670,7 +670,7 @@ function createDisplayObject(segment) {
   displayObjectForScreen.displaySeatsLeft =
     segment.pricingDetailPerAdult.availability + " seats left";
 
-  const airlineLogoUrl = "http://pics.avs.io/100/100/";
+  const airlineLogoUrl = "https://pics.avs.io/100/100/";
   displayObjectForScreen.displayAirlineLogo =
     airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
 

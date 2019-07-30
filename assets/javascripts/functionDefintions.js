@@ -285,8 +285,9 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
         
     
         <div class="col-md-3">
+        <div class="col-10">
             <label>Adults</label>
-            <select class="form" id="Adults">
+            <select class="form-control" id="Adults">
                 <option>0</option>
                 <option>1</option>
                 <option>2</option>
@@ -299,10 +300,11 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
                 <option>9</option>
                 <option>10</option>
             </select>
+            </div>
         </div>
         <div class="col-md-2">
             <label>Children</label>
-            <select class="form" id="Children">
+            <select class="form-control" id="Children">
                 <option>0</option>
                 <option>1</option>
                 <option>2</option>
@@ -318,6 +320,7 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
         </div>
         <div class="col-md-3">
             <div class ="col-8">
+            <label for="exampleInputPassword1"> Max Price</label>
             <input type="number" class="form-control" id="Price" placeholder ="Max Price">
             </div>
         </div>
@@ -658,54 +661,55 @@ function clickSubmit() {
            delete results[inputFields[i]]
          }
        }
-       console.log(results)
-
-       // Make sure Departure date, Origin and Destination are filled in
-       var invalidEntries = ["departureDate", "origin", "destination"]
-       var alerts = []
-       var forAlert = "Please fill out"
-       for (i=0; i < invalidEntries.length; i++){
-         if (results[invalidEntries[i]]) {
-         }
-         else {
-          alerts.push(invalidEntries[i])
-         }
-       }
-
-       // Sets up the alert
-
-       for (i=0; i < alerts.length; i++){
-         if (alerts[i] === "departureDate"){
-          alerts.splice(i, 1,"Departure Date")
-         }
-         else if (alerts[i] === "origin") {
-          alerts.splice(i, 1,"Origin")
-         }
-         else if (alerts[i] === "destination") {
-          alerts.splice(i, 1,"Destination")
-         }
-       }
        
-       // Creates the alert
+       //console.log(results)
 
-       for (i=0; i < alerts.length; i++) {
-         forAlert = forAlert + " " + alerts[i]
-       }
+      //  // Make sure Departure date, Origin and Destination are filled in
+      //  var invalidEntries = ["departureDate", "origin", "destination"]
+      //  var alerts = []
+      //  var forAlert = "Please fill out"
+      //  for (i=0; i < invalidEntries.length; i++){
+      //    if (results[invalidEntries[i]]) {
+      //    }
+      //    else {
+      //     alerts.push(invalidEntries[i])
+      //    }
+      //  }
 
-       // Performs the alert
+      //  // Sets up the alert
 
-       if (results["departureDate"] && results["origin"] && results["destination"]) {
-       }
-      else {
-        alert(forAlert)
-      }
+      //  for (i=0; i < alerts.length; i++){
+      //    if (alerts[i] === "departureDate"){
+      //     alerts.splice(i, 1,"Departure Date")
+      //    }
+      //    else if (alerts[i] === "origin") {
+      //     alerts.splice(i, 1,"Origin")
+      //    }
+      //    else if (alerts[i] === "destination") {
+      //     alerts.splice(i, 1,"Destination")
+      //    }
+      //  }
+       
+      //  // Creates the alert
 
-      // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
-      var currentDate = moment()
-      console.log(currentDate.diff(results["departureDate"]))
-      if (currentDate.diff(results["departureDate"]) > 0) {
-        alert("Error: Invalid Departure Date")
-      }
+      //  for (i=0; i < alerts.length; i++) {
+      //    forAlert = forAlert + " " + alerts[i]
+      //  }
+
+      //  // Performs the alert
+
+      //  if (results["departureDate"] && results["origin"] && results["destination"]) {
+      //  }
+      // else {
+      //   alert(forAlert)
+      // }
+
+      // // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
+      // var currentDate = moment()
+      // console.log(currentDate.diff(results["departureDate"]))
+      // if (currentDate.diff(results["departureDate"]) > 0) {
+      //   alert("Error: Invalid Departure Date")
+      // }
 
 
        // console.log(getLowFareFlightOption(results))

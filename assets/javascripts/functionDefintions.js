@@ -1,3 +1,6 @@
+
+var flightDirection = ' ';
+
 /* In this application, we use APIs from https://developers.amadeus.com.
 The authentication mechanism is to pass APIKEY and APISECRET using POST method to receive an access token
 This access token should be used with other API calls for Authentication
@@ -22,6 +25,7 @@ function getAccessToken() {
   })
     .then(response => response.json())
     .then(function(data) {
+      console.log(data)
       return data;
     });
 }
@@ -44,6 +48,7 @@ function getLowFareFlightOption(flightSearchObject) {
         console.log("Cleared Result box");
         handleAccessTokenError(data);
       } else {
+        // console.log("Access Token: " + displayObject )
         return makeamadeusApiCall(data.access_token, queryString);
       }
     })
@@ -90,7 +95,7 @@ function getAirportCodeUsingCityName(cityName) {
 
   return getAccessToken()
     .then(function(data) {
-      return makeamadeusApiCall(data.access_token, queryString);
+      return makeamadeusApiCall(displayObject.access_token, queryString);
     })
     .catch(error => console.error(error));
 }
@@ -285,9 +290,8 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
         
     
         <div class="col-md-3">
-        <div class="col-10">
             <label>Adults</label>
-            <select class="form-control" id="Adults">
+            <select class="form" id="Adults">
                 <option>0</option>
                 <option>1</option>
                 <option>2</option>
@@ -300,11 +304,10 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
                 <option>9</option>
                 <option>10</option>
             </select>
-            </div>
         </div>
         <div class="col-md-2">
             <label>Children</label>
-            <select class="form-control" id="Children">
+            <select class="form" id="Children">
                 <option>0</option>
                 <option>1</option>
                 <option>2</option>
@@ -320,7 +323,6 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
         </div>
         <div class="col-md-3">
             <div class ="col-8">
-            <label for="exampleInputPassword1"> Max Price</label>
             <input type="number" class="form-control" id="Price" placeholder ="Max Price">
             </div>
         </div>
@@ -379,13 +381,10 @@ function restorepointsOfInterest() {
 */
 function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   if (flightSearchResult.hasOwnProperty("errors")) {
-    $(".flightErrorMessage").remove();
-    $(".flightSearchResults").remove();
-    console.log("Cleared Result box");
     handleApiCallError(flightSearchResult);
   } else {
     //A Container is added to the HTML body which will hold all the flight results
-    console.log("Adding flight search results")
+    console.log("Adding flight search results");
     $("body").append(
       $("<div>", {
         class: "container flightSearchResults"
@@ -395,154 +394,33 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
     /*The response is structured as data, dictionaries and meta
   data holds all the flight details ; dictionaries is to convert codes to user friendly text
   data --> offerItem --> services --> segments
-
   So looping through each offers to begin with
   */
     flightSearchResult.data.forEach(function(flightOffer, index) {
       //Each offer can have "services" "price", (2 more which we are not using currently)
       flightOffer.offerItems.forEach(function(offerItems) {
         //Create a card per offer
-        $(".flightSearchResults").append(
-          $("<div>", {
-            class: "card card-header offer-group ",
-            offerNumber: `${index}`,
-            text:
-              "Offer Number: " +
-              `${index + 1}` +
-              " ; Round Trip @ CAD " +
-              offerItems.price.total
-          }).append(
-            $("<ul>", {
-              class: "list-group list-group-flush"
-            })
-          )
-        );
-
+        createCardForNewOffer(index, offerItems.price.total);
         //"Services" can have 2 "segments" , one for onward and one for return trip
         offerItems.services.forEach(function(services, index2) {
-          if (index2 === 0) {
-            var offerItemText = "Flights to:" + flightSearchRequest.destination;
-            var flightDirection = "onward";
-          } else {
-            var offerItemText = "Flights to:" + flightSearchRequest.origin;
-            var flightDirection = "return";
-          }
+          createCardSegmentHeader(
+            index,
+            index2,
+            flightSearchRequest.origin,
+            flightSearchRequest.destination
+          );
           // Adding a item in the card group for each leg of the trip
-          $('[offerNumber="' + index + '"]')
-            .children()
-            .append(
-              $("<li>", {
-                class: "list-group-item",
-                flightdirection: flightDirection,
-                text: offerItemText
-              })
-            );
           // Now we are looping through to identify each segment's atttribute
           services.segments.forEach(function(segment) {
-            var displayRoute =
-              segment.flightSegment.departure.iataCode +
-              " - " +
-              segment.flightSegment.arrival.iataCode;
-
-            var displayDateDiff = moment(
-              moment
-                .parseZone(segment.flightSegment.arrival.at)
-                .format("YYYY-MM-DD")
-            ).diff(
-              moment(
-                moment
-                  .parseZone(segment.flightSegment.departure.at)
-                  .format("YYYY-MM-DD")
-              ),
-              "days"
-            );
-            var displayTimings =
-              moment
-                .parseZone(segment.flightSegment.departure.at)
-                .format("HH:mm") +
-              " - " +
-              moment
-                .parseZone(segment.flightSegment.arrival.at)
-                .format("HH:mm");
-
-            var displayDuration = moment(segment.flightSegment.arrival.at).diff(
-              moment(segment.flightSegment.departure.at)
-            );
-            displayDuration =
-              moment.duration(displayDuration).hours() +
-              "h " +
-              moment.duration(displayDuration).minutes() +
-              "m";
-            var displaySeatsLeft =
-              segment.pricingDetailPerAdult.availability + " seats left";
-
-            const airlineLogoUrl = "http://pics.avs.io/100/100/";
-            var displayAirlineLogo =
-              airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
-
+            var displayObjectForScreen = createDisplayObject(segment);
             // Adding details of each flight using a Bootstrap grid inside the card body
-            $('[offerNumber="' + index + '"]')
-              .find('[flightdirection="' + flightDirection + '"]')
-              .append(
-                $("<div>", {
-                  class: "flightSegment justify-content-md-center row"
-                })
-                  //Show the carrier code : EK for Emirates
-                  .append(
-                    $("<div>", {
-                      class: "col col-sm-2"
-                    }).append(
-                      $("<img>", {
-                        src: displayAirlineLogo,
-                        class: "img-fluid rounded text-center"
-                      })
-                    )
-                  )
-                  //Show the route of the flight
-                  .append(
-                    $("<div>", {
-                      class: "col col-sm-2",
-                      text: displayRoute
-                    })
-                  )
-                  //Show the timings, departure and arrival
-                  .append(
-                    $("<div>", {
-                      class: "col col-sm-2",
-                      text: displayTimings
-                    }).append($("<sup>", {
-                      class: "displaydatediff"+displayDateDiff,
-                      text: "+" + displayDateDiff,
-                    }))
-                  )
-                  .append(
-                    $("<div>", {
-                      class: "col col-sm-2",
-                      text: displayDuration
-                    })
-                  )
-
-                  //Display the number of seats left
-                  .append(
-                    $("<div>", {
-                      class: "col col-sm-2",
-                      text: displaySeatsLeft
-                    })
-                  )
-                  //Display the class of travel
-                  .append(
-                    $("<div>", {
-                      class: "col col-sm-2",
-                      text: segment.pricingDetailPerAdult.travelClass
-                    })
-                  )
-              );
+            showFlightDetailsOnPage(displayObjectForScreen, index);
           });
-        });
+        }); 
       });
     });
   }
-}
+};
 
 //Function to gracefully handle errors from the API Call
 
@@ -609,14 +487,14 @@ function handleApiCallError(error) {
 
 //Function to handle errors when access token is not available:
 function handleAccessTokenError(data){
-  console.log(data.error_description);
+  console.log(displayObject.error_description);
   $("body").append(
     $("<div>", {
       class: "container flightErrorMessage"
     }).append(
       $("<div>", {
         class: "card card-header offer-group error-message",
-        text: data.error_description
+        text: displayObject.error_description
       })
     )
   );
@@ -661,55 +539,54 @@ function clickSubmit() {
            delete results[inputFields[i]]
          }
        }
+       console.log(results)
+
+       // Make sure Departure date, Origin and Destination are filled in
+       var invalidEntries = ["departureDate", "origin", "destination"]
+       var alerts = []
+       var forAlert = "Please fill out"
+       for (i=0; i < invalidEntries.length; i++){
+         if (results[invalidEntries[i]]) {
+         }
+         else {
+          alerts.push(invalidEntries[i])
+         }
+       }
+
+       // Sets up the alert
+
+       for (i=0; i < alerts.length; i++){
+         if (alerts[i] === "departureDate"){
+          alerts.splice(i, 1,"Departure Date")
+         }
+         else if (alerts[i] === "origin") {
+          alerts.splice(i, 1,"Origin")
+         }
+         else if (alerts[i] === "destination") {
+          alerts.splice(i, 1,"Destination")
+         }
+       }
        
-       //console.log(results)
+       // Creates the alert
 
-      //  // Make sure Departure date, Origin and Destination are filled in
-      //  var invalidEntries = ["departureDate", "origin", "destination"]
-      //  var alerts = []
-      //  var forAlert = "Please fill out"
-      //  for (i=0; i < invalidEntries.length; i++){
-      //    if (results[invalidEntries[i]]) {
-      //    }
-      //    else {
-      //     alerts.push(invalidEntries[i])
-      //    }
-      //  }
+       for (i=0; i < alerts.length; i++) {
+         forAlert = forAlert + " " + alerts[i]
+       }
 
-      //  // Sets up the alert
+       // Performs the alert
 
-      //  for (i=0; i < alerts.length; i++){
-      //    if (alerts[i] === "departureDate"){
-      //     alerts.splice(i, 1,"Departure Date")
-      //    }
-      //    else if (alerts[i] === "origin") {
-      //     alerts.splice(i, 1,"Origin")
-      //    }
-      //    else if (alerts[i] === "destination") {
-      //     alerts.splice(i, 1,"Destination")
-      //    }
-      //  }
-       
-      //  // Creates the alert
+       if (results["departureDate"] && results["origin"] && results["destination"]) {
+       }
+      else {
+        alert(forAlert)
+      }
 
-      //  for (i=0; i < alerts.length; i++) {
-      //    forAlert = forAlert + " " + alerts[i]
-      //  }
-
-      //  // Performs the alert
-
-      //  if (results["departureDate"] && results["origin"] && results["destination"]) {
-      //  }
-      // else {
-      //   alert(forAlert)
-      // }
-
-      // // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
-      // var currentDate = moment()
-      // console.log(currentDate.diff(results["departureDate"]))
-      // if (currentDate.diff(results["departureDate"]) > 0) {
-      //   alert("Error: Invalid Departure Date")
-      // }
+      // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
+      var currentDate = moment()
+      console.log(currentDate.diff(results["departureDate"]))
+      if (currentDate.diff(results["departureDate"]) > 0) {
+        alert("Error: Invalid Departure Date")
+      }
 
 
        // console.log(getLowFareFlightOption(results))
@@ -719,3 +596,143 @@ function clickSubmit() {
      getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
   })
   }
+
+function createCardForNewOffer(index, offerPrice) {
+  $(".flightSearchResults").append(
+    $("<div>", {
+      class: "card card-header offer-group ",
+      offerNumber: `${index}`,
+      text:
+        "Offer Number: " + `${index + 1}` + " ; Round Trip @ CAD " + offerPrice
+    }).append(
+      $("<ul>", {
+        class: "list-group list-group-flush"
+      })
+    )
+  );
+};
+
+function createCardSegmentHeader(index, index2, origin, destination){
+  if (index2 === 0) {
+    var offerItemText = "Flights to:" + destination
+    flightDirection = "onward";
+  } else {
+    var offerItemText = "Flights to:" + origin;
+    flightDirection = "return";
+  }
+
+  $('[offerNumber="' + index + '"]')
+  .children()
+  .append(
+    $("<li>", {
+      class: "list-group-item",
+      flightdirection: flightDirection,
+      text: offerItemText
+    })
+  );
+};
+
+function createDisplayObject(segment) {
+  displayObjectForScreen = {};
+  displayObjectForScreen.displayRoute =
+    segment.flightSegment.departure.iataCode +
+    " - " +
+    segment.flightSegment.arrival.iataCode;
+
+  displayObjectForScreen.displayDateDiff = moment(
+    moment.parseZone(segment.flightSegment.arrival.at).format("YYYY-MM-DD")
+  ).diff(
+    moment(
+      moment.parseZone(segment.flightSegment.departure.at).format("YYYY-MM-DD")
+    ),
+    "days"
+  );
+
+  displayObjectForScreen.displayTimings =
+    moment.parseZone(segment.flightSegment.departure.at).format("HH:mm") +
+    " - " +
+    moment.parseZone(segment.flightSegment.arrival.at).format("HH:mm");
+
+  var tempDuration = moment(segment.flightSegment.arrival.at).diff(
+    moment(segment.flightSegment.departure.at)
+  );
+
+  displayObjectForScreen.displayDuration =
+    moment.duration(tempDuration).hours() +
+    "h " +
+    moment.duration(tempDuration).minutes() +
+    "m";
+
+  displayObjectForScreen.displaySeatsLeft =
+    segment.pricingDetailPerAdult.availability + " seats left";
+
+  const airlineLogoUrl = "https://pics.avs.io/100/100/";
+  displayObjectForScreen.displayAirlineLogo =
+    airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
+
+  displayObjectForScreen.displayTravelClass = segment.pricingDetailPerAdult.travelClass;
+
+  return displayObjectForScreen;
+}
+
+
+function showFlightDetailsOnPage(displayObjectForScreen, index) {
+  $('[offerNumber="' + index + '"]')
+    .find('[flightdirection="' + flightDirection + '"]')
+    .append(
+      $("<div>", {
+        class: "flightSegment justify-content-md-center row"
+      })
+        //Show the carrier code : EK for Emirates
+        .append(
+          $("<div>", {
+            class: "col col-sm-2"
+          }).append(
+            $("<img>", {
+              src: displayObjectForScreen.displayAirlineLogo,
+              class: "img-fluid rounded text-center"
+            })
+          )
+        )
+        //Show the route of the flight
+        .append(
+          $("<div>", {
+            class: "col col-sm-2",
+            text: displayObjectForScreen.displayRoute
+          })
+        )
+        //Show the timings, departure and arrival
+        .append(
+          $("<div>", {
+            class: "col col-sm-2",
+            text: displayObjectForScreen.displayTimings
+          }).append(
+            $("<sup>", {
+              class: "displaydatediff" + displayObjectForScreen.displayDateDiff,
+              text: "+" + displayObjectForScreen.displayDateDiff
+            })
+          )
+        )
+        .append(
+          $("<div>", {
+            class: "col col-sm-2",
+            text: displayObjectForScreen.displayDuration
+          })
+        )
+
+        //Display the number of seats left
+        .append(
+          $("<div>", {
+            class: "col col-sm-2",
+            text: displayObjectForScreen.displaySeatsLeft
+          })
+        )
+        //Display the class of travel
+        .append(
+          $("<div>", {
+            class: "col col-sm-2",
+            text: displayObjectForScreen.displayTravelClass
+          })
+        )
+    );
+}

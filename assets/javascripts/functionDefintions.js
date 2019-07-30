@@ -128,15 +128,23 @@ function pointsOfinterest(city, interestType) {
 
   const goodType = handleSpace(interestType)
 
+  // M.T deals with max results part
+  var maxResults = "3"
+
+  if ($("#ten").is(":checked"))  {
+    maxResults = "5"
+   }
   const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
     goodCity +
-    "&limit=5&term=" +
+    "&limit=" + maxResults + "&term=" +
     goodType +
     "";
 
   const apiKey =
     "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
+
+
 
   //Make call to Yelp
 
@@ -151,8 +159,28 @@ function pointsOfinterest(city, interestType) {
 
     method: "GET",
 
-    dataType: "json"
+    dataType: "json",
+
   }).then(function(response) {
+   console.log(response.businesses.length)
+   if(response.businesses.length === 0){
+     $("#loading").addClass("d-none");
+    $("#poiCon").append(`<div class="card  shadow rounded" style="width: 100%;">                                      
+    <h5 class="card-header text-center">
+    <span>ERROR</span>
+    <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
+    </span>
+    </h5>                                        
+    <div class="row">                                     
+
+      <div class="col-md-12">
+
+        <p style="text-align: center">No results returned</p>
+
+      </div>`)
+   }
+
+
     for (let i in response.businesses) {
       // console.log("Iteration Happened")
       
@@ -175,7 +203,23 @@ function pointsOfinterest(city, interestType) {
       });
     }
     poiReviews(globalObjectslist)
-  });
+  })
+  .catch(function(){
+    $("#loading").addClass("d-none");
+    $("#poiCon").append(`<div class="card  shadow rounded" style="width: 100%;">                                      
+    <h5 class="card-header text-center">
+    <span>ERROR</span>
+    <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
+    </span>
+    </h5>                                        
+    <div class="row">                                     
+
+      <div class="col-md-12">
+
+        <p style="text-align: center">No results returned</p>
+
+      </div>`)
+  })
 }
 
 function poiReviews(globalObjectslist) {
@@ -209,7 +253,7 @@ function poiReviews(globalObjectslist) {
         ReviewerRating: response.reviews[0].rating,
         Timestamp : response.reviews[0].time_created
       }
-      if (curIteration === 5) {
+      if (curIteration === (globalObjectslist.length)) {
         // console.log("This ran")
         $("#loading").addClass("d-none"); 
         addPOI(globalObjectslist)     
@@ -359,23 +403,48 @@ function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
 }
 
 function restorepointsOfInterest() {
-  $(".contents").append(`<div class="card">
-    <div class="card-header">
-        <h5 id="cardHeader">Places to Visit!</h5>
+  $("#searchCon").append(`<div class="row">      
+  <div class="col-md-12">
+    <div class="card shadow rounded">
+      <div class="card-header">
+        <h5 id="header">Points of Interest</h5>            
+      </div>
+      <div class="information">
+        <div class="row">
+          <div class="col-md-2">
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="five" checked>
+                  <label class="form-check-label" for="five">
+                    Max Results: 3
+                  </label>
+                  </div>
+          </div>
+          <div class="col-md-2">
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="ten" >
+                  <label class="form-check-label" for="ten">
+                    Max Results: 5
+                  </label>
+                  </div>
+          </div>
+          <div class="col-md-3">
+            <label for="POIDestination">Destination</label>
+            <input type="input" class="form-control" id="poiDestination"
+              placeholder="Enter your destination please">
+          </div>
+          <div class="col-md-3">
+            <label for="POIType">Type of Attraction</label>
+            <input type="input" class="form-control" id="poiType" placeholder="Attraction Type">
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary form-control" id="poiSubmit">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-        <form>
-            <div class="form-group">
-                <label for="exampleInputEmail1">Destination</label>
-                <input type="input" class="form-control" id="destination2"
-                    aria-describedby="emailHelp" placeholder="Enter your destination please">
-                <small id="emailHelp" class="form-text text-muted">Please make sure spelling is
-                    correct.</small>
-            </div>
-            <button type="submit" class="btn btn-primary" id="submitButton2">Submit</button>
-        </form>
-    </div>
-</div>`);
+  </div>`);
 }
 
 /*Function to display  flight Search on HTML. The arguments expected by the function are:
@@ -748,3 +817,18 @@ function showFlightDetailsOnPage(displayObjectForScreen, index) {
         )
     );
 }
+
+//Points of Interest page validations. Disable checkboxes
+function poiValidation () {
+  $("body").on("click","#ten",function(){
+    if ($("#ten").is(":checked"))  {
+      $("#five").prop("checked", false)
+    }
+  })
+}
+  $("body").on("click","#five",function(){
+    if ($("#five").is(":checked"))  {
+      $("#ten").prop("checked", false)
+    }
+  })
+

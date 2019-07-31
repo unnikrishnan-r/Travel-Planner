@@ -160,3 +160,17 @@ padding-left: 10px;
   .ourHeader {
     background-color: transparent;
   }
+
+  .myBtn {
+
+    transition: text-shadow 0.3s;
+
+  }
+
+ 
+
+  .myBtn:hover {
+
+    text-shadow: .5px .5px #20202088;
+
+  }

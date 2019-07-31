@@ -1,4 +1,5 @@
 var flightDirection = " ";
+var globalOfferStorage = [];
 
 /* In this application, we use APIs from https://developers.amadeus.com.
 The authentication mechanism is to pass APIKEY and APISECRET using POST method to receive an access token
@@ -469,6 +470,8 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   if (flightSearchResult.hasOwnProperty("errors")) {
     handleApiCallError(flightSearchResult);
   } else {
+     //Store the flightSearchResult in a Global Object so that it can be referenced later.
+     globalOfferStorage = [];
     //A Container is added to the HTML body which will hold all the flight results
     console.log("Adding flight search results");
     $("body").append(
@@ -483,13 +486,14 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   So looping through each offers to begin with
   */
     flightSearchResult.data.forEach(function(flightOffer, index) {
+      globalOfferStorage.push({"offerId" : flightOffer.id , "offerData" : flightOffer})
       //Each offer can have "services" "price", (2 more which we are not using currently)
       flightOffer.offerItems.forEach(function(offerItems) {
         //Create a card per offer
         if (flightSearchRequest.hasOwnProperty("returnDate")) {
-          createCardForNewOffer(index, offerItems.price.total, "Round Trip");
+          createCardForNewOffer(index, flightOffer.id, offerItems.price.total, "Round Trip");
         } else {
-          createCardForNewOffer(index, offerItems.price.total, "One Way Trip");
+          createCardForNewOffer(index, flightOffer.id, offerItems.price.total, "One Way Trip");
         }
         //"Services" can have 2 "segments" , one for onward and one for return trip
         offerItems.services.forEach(function(services, index2) {
@@ -509,8 +513,9 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
         });
       });
     });
-  }
-}
+  };
+  console.log(globalOfferStorage);
+};
 
 //Function to gracefully handle errors from the API Call
 
@@ -703,25 +708,39 @@ function clickSubmit() {
 }
 
 //Function to create a new card for each offer. Also iniitiates the card with a card group and its title
-function createCardForNewOffer(index, offerPrice, tripDirection) {
-  $(".flightSearchResults").append(
-    $("<div>", {
-      class: "card card-header offer-group ",
-      offerNumber: `${index}`,
-      text:
-        "Offer Number: " +
-        `${index + 1}` +
-        " ; " +
-        tripDirection +
-        " @ CAD " +
-        offerPrice
-    }).append(
-      $("<ul>", {
-        class: "list-group list-group-flush"
+function createCardForNewOffer(index, offerId, offerPrice,tripDirection) {
+  $(".flightSearchResults")
+    .append(
+      $("<div>", {
+        class: "card card-header card-title offer-group "
       })
+        .append(
+          $("<div>", {
+            class: "row"
+          })
+          .append(
+            $("<div>", {
+              class: "col col-md-6",
+              text:
+                "Offer Number: " +`${index + 1}` + " ; " + tripDirection + " @ CAD " + offerPrice
+            })
+          )
+          .append(
+            $("<a>", {
+              class: "col col-md-2 btn btn-primary",
+              text: "Choose this one",
+              id: offerId
+            })
+          )    
+        )
+        .append(
+          $("<ul>", {
+            class: "list-group list-group-flush",
+            offerNumber: `${index}`,
+          })
+        )
     )
-  );
-}
+};
 
 function createCardSegmentHeader(index, index2, origin, destination) {
   if (index2 === 0) {
@@ -733,7 +752,6 @@ function createCardSegmentHeader(index, index2, origin, destination) {
   }
 
   $('[offerNumber="' + index + '"]')
-    .children()
     .append(
       $("<li>", {
         class: "list-group-item",

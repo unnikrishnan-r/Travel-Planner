@@ -37,8 +37,8 @@ z-index: 10000;
 }
 
 #image {
-    height: 50px;
-    width: 50px;
+    height: 35px;
+    width: 35px;
 }
 
 #header {
@@ -62,7 +62,7 @@ padding-left: 10px;
 }
 
 .poiCard:hover {
-    transform: scale(1.15);
+    transform: scale(1.10);
     cursor: pointer;
 }
 

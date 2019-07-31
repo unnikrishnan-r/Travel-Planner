@@ -321,7 +321,7 @@ function addPOI(listObjects) {
                                                 </li>
                                                 <li class="list-group-item"><a href="${
                                                   listObjects[i].Link
-                                                }" class="card-link">Click me for more Details!</a>                                            </li>
+                                                }" class="card-link" target="_blank" style="color: black"><i class="fas fa-external-link-alt"></i>&nbsp;&nbsp;More Details!</a>                                            </li>
 
                                             </ul>
                                           </div>
@@ -336,7 +336,7 @@ function addPOI(listObjects) {
 
 function restoretripPlanner() {
   $("#flightSearchInput").append(`<div class="card">
-<div class="card-header">
+<div class="card-header ourHeader">
     <h5 id="header">Flight Search</h5>
 </div>
 <div class="information">
@@ -413,7 +413,7 @@ function restoretripPlanner() {
 
         </div>
         <div class="col-md-1">
-                <button type="submit" class="btn btn-primary form" id="submitButton1">Submit</button>
+                <button type="submit" class="btn btn-elegant form" id="submitButton1">Submit</button>
         </div>
     </div>
 </div>
@@ -424,7 +424,7 @@ function restorepointsOfInterest() {
   $("#searchCon").append(`<div class="row">      
   <div class="col-md-12">
     <div class="card shadow rounded">
-      <div class="card-header">
+      <div class="card-header ourHeader">
         <h5 id="header">Points of Interest</h5>            
       </div>
       <div class="information">
@@ -455,9 +455,7 @@ function restorepointsOfInterest() {
             <input type="input" class="form-control" id="poiType" placeholder="Attraction Type">
           </div>
           <div class="col-md-2">
-            <button type="submit" class="btn btn-primary form-control" id="poiSubmit">
-              Submit
-            </button>
+            <button type="submit" class="btn btn-elegant form" id="poiSubmit">Submit</button>
           </div>
         </div>
       </div>

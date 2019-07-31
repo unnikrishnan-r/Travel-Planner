@@ -473,9 +473,9 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
       flightOffer.offerItems.forEach(function(offerItems) {
         //Create a card per offer
         if (flightSearchRequest.hasOwnProperty("returnDate")){
-          createCardForNewOffer(index, offerItems.price.total,"Round Trip");
+          createCardForNewOffer(index, flightOffer.id, offerItems.price.total,"Round Trip");
         }else{
-          createCardForNewOffer(index, offerItems.price.total,"One Way Trip");
+          createCardForNewOffer(index, flightOffer.id,offerItems.price.total,"One Way Trip");
         };
         //"Services" can have 2 "segments" , one for onward and one for return trip
         offerItems.services.forEach(function(services, index2) {
@@ -678,19 +678,38 @@ function clickSubmit() {
   }
 
 //Function to create a new card for each offer. Also iniitiates the card with a card group and its title  
-function createCardForNewOffer(index, offerPrice,tripDirection) {
-  $(".flightSearchResults").append(
-    $("<div>", {
-      class: "card card-header offer-group ",
-      offerNumber: `${index}`,
-      text:
-        "Offer Number: " + `${index + 1}` + " ; " +tripDirection + " @ CAD " + offerPrice
-    }).append(
-      $("<ul>", {
-        class: "list-group list-group-flush"
+function createCardForNewOffer(index, offerId, offerPrice,tripDirection) {
+  $(".flightSearchResults")
+    .append(
+      $("<div>", {
+        class: "card card-header card-title offer-group "
       })
+        .append(
+          $("<div>", {
+            class: "row"
+          })
+          .append(
+            $("<div>", {
+              class: "col col-md-6",
+              text:
+                "Offer Number: " +`${index + 1}` + " ; " + tripDirection + " @ CAD " + offerPrice
+            })
+          )
+          .append(
+            $("<a>", {
+              class: "col col-md-2 btn btn-primary",
+              text: "Choose this one",
+              id: offerId
+            })
+          )    
+        )
+        .append(
+          $("<ul>", {
+            class: "list-group list-group-flush",
+            offerNumber: `${index}`,
+          })
+        )
     )
-  );
 };
 
 function createCardSegmentHeader(index, index2, origin, destination){
@@ -703,7 +722,6 @@ function createCardSegmentHeader(index, index2, origin, destination){
   }
 
   $('[offerNumber="' + index + '"]')
-  .children()
   .append(
     $("<li>", {
       class: "list-group-item",

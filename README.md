@@ -25,3 +25,4 @@ The current version of the application covers the initial feature set for #1 and
 
 ## Demo
 
+<img src="./assets/images/technologies_used/Travel Planner Demo.gif">

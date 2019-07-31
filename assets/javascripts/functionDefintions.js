@@ -1,5 +1,4 @@
-
-var flightDirection = ' ';
+var flightDirection = " ";
 
 /* In this application, we use APIs from https://developers.amadeus.com.
 The authentication mechanism is to pass APIKEY and APISECRET using POST method to receive an access token
@@ -25,7 +24,7 @@ function getAccessToken() {
   })
     .then(response => response.json())
     .then(function(data) {
-      console.log(data)
+      console.log(data);
       return data;
     });
 }
@@ -67,18 +66,20 @@ function formQueryString(url, SearchObject) {
 
 //This function makes the actual API Call and returns the JSON response
 function makeamadeusApiCall(access_token, queryString) {
-  $("#loadingImage").remove();
-  $("#flightSearchInput").append(`<img id="loadingImage" src = "./assets/images/AdorableDecimalGalapagossealion-size_restricted.gif">`)
+  $("#loadingIndex").removeClass("d-none");
+  //Commented out by SL to include plane loading
+  // $("#flightSearchInput").append(
+  //   `<img id="loadingImage" src = "./assets/images/AdorableDecimalGalapagossealion-size_restricted.gif">`
+  // );
   return fetch(queryString, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + access_token
     }
   })
-  
     .then(response => response.json())
     .then(function(data) {
-      $("#loadingImage").remove();
+      $("#loadingIndex").addClass("d-none");
       return data;
     });
 }
@@ -126,25 +127,25 @@ function pointsOfinterest(city, interestType) {
 
   const goodCity = handleSpace(city);
 
-  const goodType = handleSpace(interestType)
+  const goodType = handleSpace(interestType);
 
   // M.T deals with max results part
-  var maxResults = "3"
+  var maxResults = "3";
 
-  if ($("#ten").is(":checked"))  {
-    maxResults = "5"
-   }
+  if ($("#ten").is(":checked")) {
+    maxResults = "5";
+  }
   const myurl =
     "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" +
     goodCity +
-    "&limit=" + maxResults + "&term=" +
+    "&limit=" +
+    maxResults +
+    "&term=" +
     goodType +
     "";
 
   const apiKey =
     "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
-
-
 
   //Make call to Yelp
 
@@ -159,13 +160,14 @@ function pointsOfinterest(city, interestType) {
 
     method: "GET",
 
-    dataType: "json",
-
-  }).then(function(response) {
-   console.log(response.businesses.length)
-   if(response.businesses.length === 0){
-     $("#loading").addClass("d-none");
-    $("#poiCon").append(`<div class="card  shadow rounded" style="width: 100%;">                                      
+    dataType: "json"
+  })
+    .then(function(response) {
+      console.log(response.businesses.length);
+      if (response.businesses.length === 0) {
+        $("#loading").addClass("d-none");
+        $("#poiCon")
+          .append(`<div class="card  shadow rounded" style="width: 100%;">                                      
     <h5 class="card-header text-center">
     <span>ERROR</span>
     <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
@@ -177,36 +179,37 @@ function pointsOfinterest(city, interestType) {
 
         <p style="text-align: center">No results returned</p>
 
-      </div>`)
-   }
+      </div>`);
+      }
 
+      for (let i in response.businesses) {
+        // console.log("Iteration Happened")
 
-    for (let i in response.businesses) {
-      // console.log("Iteration Happened")
-      
-      globalObjectslist.push({
-        Name: response.businesses[i].name,
+        globalObjectslist.push({
+          Name: response.businesses[i].name,
 
-        Address: response.businesses[i].location.display_address[1],
+          Address: response.businesses[i].location.display_address[1],
 
-        Img: response.businesses[i].image_url,
+          Img: response.businesses[i].image_url,
 
-        Rating: response.businesses[i].rating,
+          Rating: response.businesses[i].rating,
 
-        Review_Count: response.businesses[i].review_count,
+          Review_Count: response.businesses[i].review_count,
 
-        Link: response.businesses[i].url,
+          Link: response.businesses[i].url,
 
-        Telephone: response.businesses[i].display_phone,
+          Telephone: response.businesses[i].display_phone,
 
-        Business: response.businesses[i].id
-      });
-    }
-    poiReviews(globalObjectslist)
-  })
-  .catch(function(){
-    $("#loading").addClass("d-none");
-    $("#poiCon").append(`<div class="card  shadow rounded" style="width: 100%;">                                      
+          Business: response.businesses[i].id
+        });
+      }
+      poiReviews(globalObjectslist);
+    })
+    .catch(function() {
+      $("#loading").addClass("d-none");
+      $(
+        "#poiCon"
+      ).append(`<div class="card  shadow rounded" style="width: 100%;">                                      
     <h5 class="card-header text-center">
     <span>ERROR</span>
     <span id="address" class="card-text text-right" style="font-style: italic; font-size: 75%;">
@@ -218,47 +221,49 @@ function pointsOfinterest(city, interestType) {
 
         <p style="text-align: center">No results returned</p>
 
-      </div>`)
-  })
+      </div>`);
+    });
 }
 
 function poiReviews(globalObjectslist) {
-  let curIteration = 0
+  let curIteration = 0;
   for (let i in globalObjectslist) {
     const myurl =
-    "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/"+globalObjectslist[i].Business+"/reviews";
-    
+      "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/" +
+      globalObjectslist[i].Business +
+      "/reviews";
+
     const apiKey =
-    "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
-    
+      "4dizE_fZpusYfUraxlSSEKEE5wQLbKEYA0KDOIamkjL8P8LbqkfmR-9nz0rXQ1gyYCK2H0uQ-xiKRCDELKrJ9hAb1csxtEPSyTEKrTXhbUuvHj62AYSg8K0d6Bc2XXYx";
+
     //Make call to Yelp
-  
+
     $.ajax({
       url: myurl,
-      
+
       //Header required as per Yelp API documentation
-      
+
       headers: {
         Authorization: "Bearer " + apiKey
       },
-  
+
       method: "GET",
-      
+
       dataType: "json"
-    }).then(function(response){
-      curIteration ++
-      globalObjectslist[i].Review = {        
-        Name : response.reviews[0].user.name,
-        Text : response.reviews[0].text,
+    }).then(function(response) {
+      curIteration++;
+      globalObjectslist[i].Review = {
+        Name: response.reviews[0].user.name,
+        Text: response.reviews[0].text,
         ReviewerRating: response.reviews[0].rating,
-        Timestamp : response.reviews[0].time_created
-      }
-      if (curIteration === (globalObjectslist.length)) {
+        Timestamp: response.reviews[0].time_created
+      };
+      if (curIteration === globalObjectslist.length) {
         // console.log("This ran")
-        $("#loading").addClass("d-none"); 
-        addPOI(globalObjectslist)     
+        $("#loading").addClass("d-none");
+        addPOI(globalObjectslist);
       }
-    })
+    });
   }
 }
 
@@ -283,9 +288,17 @@ function addPOI(listObjects) {
 
                                           </div>
                                           <div class="col-md-5">
-                                          <p class="text-left reviewerName">- ${listObjects[i].Review.Name}</p>
-                                          <h5 class="reviewerText">"${listObjects[i].Review.Text}"</h5>
-                                          <p class="text-right">${moment(listObjects[i].Review.Timestamp).format("dddd, MMMM Do YYYY")}</p>                                          
+                                          <p class="text-left reviewerName">- ${
+                                            listObjects[i].Review.Name
+                                          }</p>
+                                          <h5 class="reviewerText">"${
+                                            listObjects[i].Review.Text
+                                          }"</h5>
+                                          <p class="text-right">${moment(
+                                            listObjects[i].Review.Timestamp
+                                          ).format(
+                                            "dddd, MMMM Do YYYY"
+                                          )}</p>                                          
                                           </div>
                                           <div class="col-md-3">
 
@@ -300,7 +313,9 @@ function addPOI(listObjects) {
                                                 }</li>
                                                 
                                                 </li>
-                                                <li class="list-group-item"><i class="fas fa-phone"></i>&nbsp;&nbsp;${listObjects[i].Telephone}
+                                                <li class="list-group-item"><i class="fas fa-phone"></i>&nbsp;&nbsp;${
+                                                  listObjects[i].Telephone
+                                                }
                                                 </li>
                                                 <li class="list-group-item"><a href="${
                                                   listObjects[i].Link
@@ -317,7 +332,8 @@ function addPOI(listObjects) {
 
 // HTML dynamic loading
 
-function restoretripPlanner(){$("#flightSearchInput").append(`<div class="card">
+function restoretripPlanner() {
+  $("#flightSearchInput").append(`<div class="card">
 <div class="card-header">
     <h5 id="header">Flight Search</h5>
 </div>
@@ -472,11 +488,11 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
       //Each offer can have "services" "price", (2 more which we are not using currently)
       flightOffer.offerItems.forEach(function(offerItems) {
         //Create a card per offer
-        if (flightSearchRequest.hasOwnProperty("returnDate")){
-          createCardForNewOffer(index, offerItems.price.total,"Round Trip");
-        }else{
-          createCardForNewOffer(index, offerItems.price.total,"One Way Trip");
-        };
+        if (flightSearchRequest.hasOwnProperty("returnDate")) {
+          createCardForNewOffer(index, offerItems.price.total, "Round Trip");
+        } else {
+          createCardForNewOffer(index, offerItems.price.total, "One Way Trip");
+        }
         //"Services" can have 2 "segments" , one for onward and one for return trip
         offerItems.services.forEach(function(services, index2) {
           createCardSegmentHeader(
@@ -492,11 +508,11 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
             // Adding details of each flight using a Bootstrap grid inside the card body
             showFlightDetailsOnPage(displayObjectForScreen, index);
           });
-        }); 
+        });
       });
     });
   }
-};
+}
 
 //Function to gracefully handle errors from the API Call
 
@@ -534,7 +550,7 @@ function handleApiCallError(error) {
       var erroredParameter = "Passengers";
 
     case "departureDate/returnDate":
-      var erroredParameter = "Travel Dates "
+      var erroredParameter = "Travel Dates ";
   }
 
   switch (error.errors[0].status) {
@@ -565,7 +581,7 @@ function handleApiCallError(error) {
 }
 
 //Function to handle errors when access token is not available:
-function handleAccessTokenError(data){
+function handleAccessTokenError(data) {
   console.log(displayObject.error_description);
   $("body").append(
     $("<div>", {
@@ -579,123 +595,139 @@ function handleAccessTokenError(data){
   );
 }
 
-
-
 // On Click of submit
 
 function clickSubmit() {
-    
-  $("body").on("click","#submitButton1",function(event){
-      
-      event.preventDefault();
-      
-      let results = {
-        origin: $("#origin").val().trim(),
-        destination: $("#destination").val().trim(),
-        departureDate: $("#departure").val(),
-        returnDate: $("#arrival").val(),
-        adults: $("#Adults :selected").val(),
-        children: $("#Children :selected").val(),
-        travelClass: $("#class :selected").val(),
-        nonStop: "false",
-        //Defaulting currency and max in the API call
-        currency:"CAD",
-        maxPrice: $("#Price").val(),
-        max: 10
+  $("body").on("click", "#submitButton1", function(event) {
+    event.preventDefault();
+
+    let results = {
+      origin: $("#origin")
+        .val()
+        .trim(),
+      destination: $("#destination")
+        .val()
+        .trim(),
+      departureDate: $("#departure").val(),
+      returnDate: $("#arrival").val(),
+      adults: $("#Adults :selected").val(),
+      children: $("#Children :selected").val(),
+      travelClass: $("#class :selected").val(),
+      nonStop: "false",
+      //Defaulting currency and max in the API call
+      currency: "CAD",
+      maxPrice: $("#Price").val(),
+      max: 10
+    };
+
+    // if the trip type is continous place true in results otherwise false in results for nonStop
+    if ($("#Continous").is(":checked")) {
+      results.nonStop = "true";
+    }
+
+    // parse through the object and delete all empty variables. Pass those to the API flight search call
+    inputFields = [
+      "origin",
+      "destination",
+      "departureDate",
+      "returnDate",
+      "adults",
+      "children",
+      "travelClass",
+      "nonStop",
+      "currency",
+      "maxPrice"
+    ];
+
+    for (i = 0; i < inputFields.length; i++) {
+      if (results[inputFields[i]] == null || results[inputFields[i]] == "") {
+        delete results[inputFields[i]];
       }
-      
-      // if the trip type is continous place true in results otherwise false in results for nonStop
-      if ($("#Continous").is(":checked")) {
-         results.nonStop = "true"                
-       }
+    }
 
-       
-       // parse through the object and delete all empty variables. Pass those to the API flight search call
-        inputFields = ["origin","destination","departureDate","returnDate","adults","children","travelClass","nonStop","currency","maxPrice"]
-      
-       for (i=0; i < inputFields.length; i++) {
-         if (results[inputFields[i]] == null || results[inputFields[i]] == "") {
-           delete results[inputFields[i]]
-         }
-       }
-       
-       //console.log(results)
+    //console.log(results)
 
-      //  // Make sure Departure date, Origin and Destination are filled in
-      //  var invalidEntries = ["departureDate", "origin", "destination"]
-      //  var alerts = []
-      //  var forAlert = "Please fill out"
-      //  for (i=0; i < invalidEntries.length; i++){
-      //    if (results[invalidEntries[i]]) {
-      //    }
-      //    else {
-      //     alerts.push(invalidEntries[i])
-      //    }
-      //  }
+    //  // Make sure Departure date, Origin and Destination are filled in
+    //  var invalidEntries = ["departureDate", "origin", "destination"]
+    //  var alerts = []
+    //  var forAlert = "Please fill out"
+    //  for (i=0; i < invalidEntries.length; i++){
+    //    if (results[invalidEntries[i]]) {
+    //    }
+    //    else {
+    //     alerts.push(invalidEntries[i])
+    //    }
+    //  }
 
-      //  // Sets up the alert
+    //  // Sets up the alert
 
-      //  for (i=0; i < alerts.length; i++){
-      //    if (alerts[i] === "departureDate"){
-      //     alerts.splice(i, 1,"Departure Date")
-      //    }
-      //    else if (alerts[i] === "origin") {
-      //     alerts.splice(i, 1,"Origin")
-      //    }
-      //    else if (alerts[i] === "destination") {
-      //     alerts.splice(i, 1,"Destination")
-      //    }
-      //  }
-       
-      //  // Creates the alert
+    //  for (i=0; i < alerts.length; i++){
+    //    if (alerts[i] === "departureDate"){
+    //     alerts.splice(i, 1,"Departure Date")
+    //    }
+    //    else if (alerts[i] === "origin") {
+    //     alerts.splice(i, 1,"Origin")
+    //    }
+    //    else if (alerts[i] === "destination") {
+    //     alerts.splice(i, 1,"Destination")
+    //    }
+    //  }
 
-      //  for (i=0; i < alerts.length; i++) {
-      //    forAlert = forAlert + " " + alerts[i]
-      //  }
+    //  // Creates the alert
 
-      //  // Performs the alert
+    //  for (i=0; i < alerts.length; i++) {
+    //    forAlert = forAlert + " " + alerts[i]
+    //  }
 
-      //  if (results["departureDate"] && results["origin"] && results["destination"]) {
-      //  }
-      // else {
-      //   alert(forAlert)
-      // }
+    //  // Performs the alert
 
-      // // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
-      // var currentDate = moment()
-      // console.log(currentDate.diff(results["departureDate"]))
-      // if (currentDate.diff(results["departureDate"]) > 0) {
-      //   alert("Error: Invalid Departure Date")
-      // }
+    //  if (results["departureDate"] && results["origin"] && results["destination"]) {
+    //  }
+    // else {
+    //   alert(forAlert)
+    // }
 
+    // // date validation. Make sure date sequence makes sense. Departure date cannot be prior to current date.
+    // var currentDate = moment()
+    // console.log(currentDate.diff(results["departureDate"]))
+    // if (currentDate.diff(results["departureDate"]) > 0) {
+    //   alert("Error: Invalid Departure Date")
+    // }
 
-       // console.log(getLowFareFlightOption(results))
-       $(".flightErrorMessage").remove();
-       $(".flightSearchResults").remove();
-       console.log("Cleared Prev")
-     getLowFareFlightOption(results).then(resp => displayFlightSearchResults(results,resp));
-  })
-  }
+    // console.log(getLowFareFlightOption(results))
+    $(".flightErrorMessage").remove();
+    $(".flightSearchResults").remove();
+    console.log("Cleared Prev");
+    getLowFareFlightOption(results).then(resp =>
+      displayFlightSearchResults(results, resp)
+    );
+  });
+}
 
-//Function to create a new card for each offer. Also iniitiates the card with a card group and its title  
-function createCardForNewOffer(index, offerPrice,tripDirection) {
+//Function to create a new card for each offer. Also iniitiates the card with a card group and its title
+function createCardForNewOffer(index, offerPrice, tripDirection) {
   $(".flightSearchResults").append(
     $("<div>", {
       class: "card card-header offer-group ",
       offerNumber: `${index}`,
       text:
-        "Offer Number: " + `${index + 1}` + " ; " +tripDirection + " @ CAD " + offerPrice
+        "Offer Number: " +
+        `${index + 1}` +
+        " ; " +
+        tripDirection +
+        " @ CAD " +
+        offerPrice
     }).append(
       $("<ul>", {
         class: "list-group list-group-flush"
       })
     )
   );
-};
+}
 
-function createCardSegmentHeader(index, index2, origin, destination){
+function createCardSegmentHeader(index, index2, origin, destination) {
   if (index2 === 0) {
-    var offerItemText = "Flights to:" + destination
+    var offerItemText = "Flights to:" + destination;
     flightDirection = "onward";
   } else {
     var offerItemText = "Flights to:" + origin;
@@ -703,15 +735,15 @@ function createCardSegmentHeader(index, index2, origin, destination){
   }
 
   $('[offerNumber="' + index + '"]')
-  .children()
-  .append(
-    $("<li>", {
-      class: "list-group-item",
-      flightdirection: flightDirection,
-      text: offerItemText
-    })
-  );
-};
+    .children()
+    .append(
+      $("<li>", {
+        class: "list-group-item",
+        flightdirection: flightDirection,
+        text: offerItemText
+      })
+    );
+}
 
 function createDisplayObject(segment) {
   displayObjectForScreen = {};
@@ -751,11 +783,11 @@ function createDisplayObject(segment) {
   displayObjectForScreen.displayAirlineLogo =
     airlineLogoUrl + segment.flightSegment.carrierCode + ".png";
 
-  displayObjectForScreen.displayTravelClass = segment.pricingDetailPerAdult.travelClass;
+  displayObjectForScreen.displayTravelClass =
+    segment.pricingDetailPerAdult.travelClass;
 
   return displayObjectForScreen;
 }
-
 
 function showFlightDetailsOnPage(displayObjectForScreen, index) {
   $('[offerNumber="' + index + '"]')
@@ -819,16 +851,15 @@ function showFlightDetailsOnPage(displayObjectForScreen, index) {
 }
 
 //Points of Interest page validations. Disable checkboxes
-function poiValidation () {
-  $("body").on("click","#ten",function(){
-    if ($("#ten").is(":checked"))  {
-      $("#five").prop("checked", false)
+function poiValidation() {
+  $("body").on("click", "#ten", function() {
+    if ($("#ten").is(":checked")) {
+      $("#five").prop("checked", false);
     }
-  })
+  });
 }
-  $("body").on("click","#five",function(){
-    if ($("#five").is(":checked"))  {
-      $("#ten").prop("checked", false)
-    }
-  })
-
+$("body").on("click", "#five", function() {
+  if ($("#five").is(":checked")) {
+    $("#ten").prop("checked", false);
+  }
+});

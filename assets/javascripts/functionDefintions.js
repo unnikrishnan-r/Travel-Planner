@@ -728,12 +728,17 @@ function createCardForNewOffer(index, offerId, offerPrice,tripDirection) {
             })
           )
           .append(
-            $("<a>", {
-              class: "col col-md-2 btn btn-primary flightChoice",
-              text: "Choose this one",
-              state: "not-selected",
-              id: offerId
-            })
+            `<a class="col col-md-1 offset-md-5 flightChoice" text="Choose this one" state="not-selected" id=${offerId} style="background-color: transparent">
+
+              <i class="far fa-star myBtn" style="background-color: transparent;"></i>
+
+            </a>`
+            // $("<a>", {
+            //   class: "col col-md-2 btn btn-primary flightChoice",
+            //   text: "Choose this one",
+            //   state: "not-selected",
+            //   id: offerId
+            // })
           )    
         )
         .append(

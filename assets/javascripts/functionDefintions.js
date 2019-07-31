@@ -1,5 +1,6 @@
 
 var flightDirection = ' ';
+var globalOfferStorage = [];
 
 /* In this application, we use APIs from https://developers.amadeus.com.
 The authentication mechanism is to pass APIKEY and APISECRET using POST method to receive an access token
@@ -455,6 +456,8 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   if (flightSearchResult.hasOwnProperty("errors")) {
     handleApiCallError(flightSearchResult);
   } else {
+    //Store the flightSearchResult in a Global Object so that it can be referenced later.
+    globalOfferStorage = [];
     //A Container is added to the HTML body which will hold all the flight results
     console.log("Adding flight search results");
     $("body").append(
@@ -469,6 +472,7 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
   So looping through each offers to begin with
   */
     flightSearchResult.data.forEach(function(flightOffer, index) {
+      globalOfferStorage.push({"offerId" : flightOffer.id , "offerData" : flightOffer})
       //Each offer can have "services" "price", (2 more which we are not using currently)
       flightOffer.offerItems.forEach(function(offerItems) {
         //Create a card per offer
@@ -496,6 +500,7 @@ function displayFlightSearchResults(flightSearchRequest, flightSearchResult) {
       });
     });
   }
+  console.log(globalOfferStorage);
 };
 
 //Function to gracefully handle errors from the API Call

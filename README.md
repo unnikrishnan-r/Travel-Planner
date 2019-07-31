@@ -25,3 +25,5 @@ The current version of the application covers the initial feature set for #1 and
 <img src="./assets/images/technologies_used/MDBootstrap.png" width="100" height="100">
 
 ## Demo
+
+<img src="./assets/images/technologies_used/Travel Planner Demo.gif">

@@ -727,8 +727,9 @@ function createCardForNewOffer(index, offerId, offerPrice,tripDirection) {
           )
           .append(
             $("<a>", {
-              class: "col col-md-2 btn btn-primary",
+              class: "col col-md-2 btn btn-primary flightChoice",
               text: "Choose this one",
+              state: "not-selected",
               id: offerId
             })
           )    
